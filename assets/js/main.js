@@ -144,7 +144,16 @@ function viewAllProducts(category) {
     // showProductsModal(category);
 }
 
-// Cập nhật HTML cho phần featured products
+// Thêm event listener cho window load
+window.addEventListener("load", () => {
+    const loaderOverlay = document.querySelector(".loader-overlay");
+    if (loaderOverlay) {
+        setTimeout(() => {
+            loaderOverlay.style.display = "none";
+        }, 1000); // Ẩn loader sau 1 giây
+    }
+});
+
 function displayFeaturedProducts() {
     const slider = document.querySelector(".featured__slider");
     const wrapper = document.querySelector(".featured__wrapper");
@@ -192,6 +201,7 @@ function initFeaturedSlider(totalSlides) {
     const slidesPerView = 3;
     const totalGroups = Math.ceil(totalSlides / slidesPerView);
     const slideWidth = (wrapper.offsetWidth - 30) / 3;
+    let autoSlideInterval;
 
     function updateSlider() {
         const offset = -(currentIndex * slidesPerView * slideWidth);
@@ -256,10 +266,44 @@ function initFeaturedSlider(totalSlides) {
         updateSlider();
     }
 
-    prevBtn?.addEventListener("click", () => goToSlide(currentIndex - 1));
-    nextBtn?.addEventListener("click", () => goToSlide(currentIndex + 1));
+    function startAutoSlide() {
+        // Clear existing interval if any
+        if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+        }
 
+        // Set new interval
+        autoSlideInterval = setInterval(() => {
+            goToSlide(currentIndex + 1);
+        }, 2000); // Chuyển slide mỗi 2 giây
+    }
+
+    function stopAutoSlide() {
+        if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+        }
+    }
+
+    // Thêm event listeners
+    prevBtn?.addEventListener("click", () => {
+        goToSlide(currentIndex - 1);
+        stopAutoSlide();
+        startAutoSlide(); // Restart auto slide sau khi click
+    });
+
+    nextBtn?.addEventListener("click", () => {
+        goToSlide(currentIndex + 1);
+        stopAutoSlide();
+        startAutoSlide(); // Restart auto slide sau khi click
+    });
+
+    // Dừng auto slide khi hover vào slider
+    wrapper.addEventListener("mouseenter", stopAutoSlide);
+    wrapper.addEventListener("mouseleave", startAutoSlide);
+
+    // Khởi tạo slider và bắt đầu auto slide
     updateSlider();
+    startAutoSlide();
 }
 
 // Hiển thị/ẩn loading
