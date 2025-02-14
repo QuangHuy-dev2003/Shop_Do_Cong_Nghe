@@ -5,38 +5,41 @@ function updateUserMenu() {
     console.log("updateUserMenu called"); // Kiểm tra hàm có được gọi không
 
     try {
-        const user = JSON.parse(localStorage.getItem("user"));
-        console.log("LocalStorage user data:", localStorage.getItem("user")); // Kiểm tra dữ liệu thô từ localStorage
-        console.log("Parsed user data:", user); // Kiểm tra dữ liệu sau khi parse
-
         const userDropdown = document.querySelector(".header__user-dropdown");
-        console.log("Dropdown element:", userDropdown); // Kiểm tra element dropdown
+        const userData = localStorage.getItem("user");
 
-        if (!userDropdown) {
-            console.error("Dropdown element not found");
-            return;
-        }
+        if (userData) {
+            const user = JSON.parse(userData);
+            console.log(
+                "LocalStorage user data:",
+                localStorage.getItem("user")
+            ); // Kiểm tra dữ liệu thô từ localStorage
+            console.log("Parsed user data:", user); // Kiểm tra dữ liệu sau khi parse
 
-        if (user) {
             console.log("User is logged in:", user.name);
             // Người dùng đã đăng nhập
             userDropdown.innerHTML = `
                 <div class="header__user-info">
-                    <span class="header__user-greeting">Xin chào, ${user.name}</span>
+                    <div class="header__user-greeting">Xin chào, ${user.name}</div>
                 </div>
                 <a href="/profile" class="header__user-link">
-                    <i class="fas fa-user-edit"></i>
-                    Cập nhật thông tin
+                    <i class="fas fa-user-circle"></i>
+                    Thông tin tài khoản
                 </a>
-                <a href="/purchase-history" class="header__user-link">
-                    <i class="fas fa-history"></i>
-                    Lịch sử mua hàng
-                </a>
-                <a href="#!" class="header__user-link" onclick="handleLogout()">
+                <a href="#" class="header__user-link" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i>
                     Đăng xuất
                 </a>
             `;
+
+            // Xử lý đăng xuất
+            const logoutBtn = document.getElementById("logoutBtn");
+            logoutBtn?.addEventListener("click", (e) => {
+                e.preventDefault();
+                localStorage.removeItem("user");
+                localStorage.removeItem(`cart_${user.id}`); // Xóa giỏ hàng của user
+                window.location.href = "/"; // Chuyển về trang chủ
+            });
         } else {
             console.log("No user logged in");
             // Chưa đăng nhập
@@ -90,10 +93,27 @@ function initializeHeader() {
     }
 }
 
+// Thêm active menu
+function setActiveMenu() {
+    const currentPath = window.location.pathname;
+    const menuItems = document.querySelectorAll(".header__nav-link");
+
+    menuItems.forEach((item) => {
+        item.classList.remove("active");
+        if (item.getAttribute("href") === currentPath) {
+            item.classList.add("active");
+        }
+    });
+}
+
 // Đăng ký event listener cho DOMContentLoaded
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeHeader);
+    document.addEventListener("DOMContentLoaded", () => {
+        initializeHeader();
+        setActiveMenu();
+    });
 } else {
     // DOM đã load xong
     initializeHeader();
+    setActiveMenu();
 }

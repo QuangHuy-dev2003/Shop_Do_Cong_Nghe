@@ -3,31 +3,38 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Thêm sản phẩm vào giỏ hàng
 function addToCart(productId) {
-    const product = getProductById(productId);
-    if (!product) return;
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        showToast("Vui lòng đăng nhập để thêm vào giỏ hàng", "error");
+        return;
+    }
 
-    const existingItem = cart.find(item => item.id === productId);
+    const cartKey = `cart_${user.id}`;
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     
-    if (existingItem) {
-        existingItem.quantity += 1;
+    // Lấy thông tin sản phẩm từ products.js
+    const product = getProductById(productId);
+    if (!product) {
+        showToast("Không tìm thấy sản phẩm", "error");
+        return;
+    }
+
+    const existingProduct = cart.find(item => item.id === productId);
+    if (existingProduct) {
+        existingProduct.quantity += 1;
     } else {
         cart.push({
             id: productId,
             quantity: 1,
-            price: product.price,
             name: product.name,
+            price: product.price,
             image: product.image
         });
     }
-    
-    // Lưu giỏ hàng vào localStorage
-    saveCart();
-    
-    // Cập nhật số lượng hiển thị trên icon giỏ hàng
+
+    localStorage.setItem(cartKey, JSON.stringify(cart));
     updateCartCount();
-    
-    // Hiển thị thông báo
-    showToast('Đã thêm sản phẩm vào giỏ hàng');
+    showToast("Đã thêm sản phẩm vào giỏ hàng", "success");
 }
 
 // Cập nhật số lượng sản phẩm trong giỏ hàng
@@ -62,10 +69,16 @@ function saveCart() {
 
 // Cập nhật số lượng hiển thị trên icon giỏ hàng
 function updateCartCount() {
-    const cartCount = document.querySelector('.header__cart-count');
-    if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
+    const cartCountElement = document.querySelector(".header__cart-count");
+    if (!cartCountElement) return;
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+        const cartKey = `cart_${user.id}`;
+        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        cartCountElement.textContent = cart.length;
+    } else {
+        cartCountElement.textContent = "0";
     }
 }
 
@@ -162,4 +175,7 @@ function handleCheckout(event) {
     
     // Chuyển đến trang cảm ơn
     window.location.href = `/thank-you.html?orderId=${orderId}`;
-} 
+}
+
+// Gọi updateCartCount khi load trang và sau khi đăng nhập
+document.addEventListener("DOMContentLoaded", updateCartCount); 

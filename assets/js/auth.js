@@ -27,6 +27,7 @@ async function handleLogin(event) {
         if (user) {
             // Lưu thông tin user vào localStorage (không lưu password)
             const userInfo = {
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role || "USER",

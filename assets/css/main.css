@@ -914,3 +914,70 @@
     height: 200px;
     opacity: 0;
 }
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease;
+    max-width: 350px;
+}
+
+.toast--success {
+    border-left: 4px solid #4caf50;
+}
+
+.toast--error {
+    border-left: 4px solid #f44336;
+}
+
+.toast::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 12px;
+    font-size: 1.2rem;
+}
+
+.toast--success::before {
+    content: "\f00c";
+    color: #4caf50;
+}
+
+.toast--error::before {
+    content: "\f00d";
+    color: #f44336;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast--fade-out {
+    animation: slideOut 0.3s ease forwards;
+}

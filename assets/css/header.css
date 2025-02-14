@@ -32,10 +32,25 @@
     font-weight: 500;
     color: var(--text-color);
     transition: color 0.3s ease;
+    position: relative;
 }
 
 .header__nav-link:hover {
     color: var(--button-color);
+}
+
+.header__nav-link.active {
+    color: var(--button-color);
+}
+
+.header__nav-link.active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--button-color);
 }
 
 .header__actions {
@@ -126,4 +141,4 @@
         opacity: 1;
         transform: translateY(0);
     }
-} 
+}

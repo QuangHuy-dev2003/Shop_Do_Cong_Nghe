@@ -342,3 +342,7 @@ function showToast(message, type = "success") {
         }, 300);
     }, 3000);
 }
+
+function viewProductDetail(productId) {
+    window.location.href = `/product-detail.html?id=${productId}`;
+}

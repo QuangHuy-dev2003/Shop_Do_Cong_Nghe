@@ -179,12 +179,12 @@ function getProductsByCategory(category) {
 // Hàm lấy sản phẩm nổi bật (9 sản phẩm, mỗi loại 3 sản phẩm)
 function getFeaturedProducts() {
     const allProducts = getProducts();
-    console.log('All Products:', allProducts); // Log toàn bộ sản phẩm
+    console.log("All Products:", allProducts); // Log toàn bộ sản phẩm
 
     const featured = [];
     const categories = ["laptops", "smartwatches", "headphones"];
-    
-    categories.forEach(category => {
+
+    categories.forEach((category) => {
         console.log(`Getting products from category: ${category}`);
         const products = allProducts[category]
             .sort((a, b) => {
@@ -193,12 +193,12 @@ function getFeaturedProducts() {
                 return bNum - aNum;
             })
             .slice(0, 3);
-        
+
         console.log(`Products from ${category}:`, products);
         featured.push(...products);
     });
 
-    console.log('Final Featured Products:', featured);
+    console.log("Final Featured Products:", featured);
     return featured;
 }
 
@@ -266,10 +266,74 @@ function createProductCard(product) {
 
 // Khởi tạo dữ liệu khi trang web load
 document.addEventListener("DOMContentLoaded", () => {
-    try {
-        initializeProducts();
-        console.log("Products initialization successful");
-    } catch (error) {
-        console.error("Error initializing products:", error);
-    }
+    let allProducts = getAllProducts();
+    renderProducts(allProducts);
+    setupFilters();
 });
+
+function setupFilters() {
+    // Xử lý filter theo danh mục
+    document
+        .querySelectorAll('.filter-option input[type="checkbox"]')
+        .forEach((checkbox) => {
+            checkbox.addEventListener("change", filterProducts);
+        });
+
+    // Xử lý filter theo giá
+    document
+        .querySelectorAll('.filter-option input[type="radio"]')
+        .forEach((radio) => {
+            radio.addEventListener("change", filterProducts);
+        });
+
+    // Xử lý sort
+    document.querySelector(".products-sort").addEventListener("change", (e) => {
+        const sortValue = e.target.value;
+        let products = getAllProducts();
+
+        switch (sortValue) {
+            case "price-asc":
+                products.sort((a, b) => a.price - b.price);
+                break;
+            case "price-desc":
+                products.sort((a, b) => b.price - a.price);
+                break;
+            case "newest":
+                products.sort((a, b) => new Date(b.date) - new Date(a.date));
+                break;
+        }
+
+        renderProducts(products);
+    });
+}
+
+function filterProducts() {
+    let products = getAllProducts();
+    const selectedCategories = [
+        ...document.querySelectorAll(
+            '.filter-option input[type="checkbox"]:checked'
+        ),
+    ].map((cb) => cb.value);
+
+    const selectedPrice = document.querySelector(
+        '.filter-option input[type="radio"]:checked'
+    )?.value;
+
+    if (selectedCategories.length) {
+        products = products.filter((p) =>
+            selectedCategories.includes(p.category)
+        );
+    }
+
+    if (selectedPrice) {
+        const [min, max] = selectedPrice.split("-").map(Number);
+        products = products.filter((p) => {
+            if (max) {
+                return p.price >= min && p.price <= max;
+            }
+            return p.price >= min;
+        });
+    }
+
+    renderProducts(products);
+}

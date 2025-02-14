@@ -1,36 +1,21 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Lấy ID sản phẩm từ URL
+document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
+    const productId = urlParams.get("id");
     
     if (!productId) {
-        window.location.href = '/';
+        window.location.href = "/";
         return;
     }
-    
-    // Hiển thị loading
-    showLoading();
-    
-    // Lấy thông tin sản phẩm
-    const product = getProductById(productId);
+
+    // Lấy thông tin sản phẩm từ products.js
+    const product = getFeaturedProducts().find(p => p.id === productId);
     if (!product) {
-        window.location.href = '/';
+        window.location.href = "/";
         return;
     }
-    
-    // Render thông tin sản phẩm
+
+    // Hiển thị thông tin sản phẩm
     renderProductDetail(product);
-    
-    // Render sản phẩm liên quan
-    renderRelatedProducts(product);
-    
-    // Ẩn loading
-    hideLoading();
-    
-    // Setup event listeners
-    setupQuantityButtons();
-    setupAddToCartButton(product);
-    setupBuyNowButton(product);
 });
 
 function renderProductDetail(product) {
@@ -41,6 +26,46 @@ function renderProductDetail(product) {
     document.getElementById('productName').textContent = product.name;
     document.getElementById('productPrice').textContent = formatPrice(product.price);
     document.getElementById('productDescription').textContent = product.description;
+
+    // Render thông số kỹ thuật
+    const specsTable = document.getElementById('productSpecs');
+    const specs = getProductSpecs(product);
+    specsTable.innerHTML = specs.map(spec => `
+        <div class="spec-label">${spec.label}:</div>
+        <div class="spec-value">${spec.value}</div>
+    `).join('');
+
+    // Setup các button
+    setupQuantityButtons();
+    setupAddToCartButton(product);
+    setupBuyNowButton(product);
+
+    // Render sản phẩm liên quan
+    renderRelatedProducts(product);
+}
+
+function getProductSpecs(product) {
+    // Tùy theo loại sản phẩm mà trả về thông số khác nhau
+    switch(product.category) {
+        case 'laptop':
+            return [
+                { label: 'Thương hiệu', value: product.brand },
+                { label: 'Màn hình', value: product.description.split(',')[3] },
+                { label: 'CPU', value: product.description.split(',')[0] },
+                { label: 'RAM', value: product.description.split(',')[1] },
+                { label: 'Ổ cứng', value: product.description.split(',')[2] }
+            ];
+        case 'smartwatch':
+            return [
+                { label: 'Thương hiệu', value: product.brand },
+                { label: 'Kích thước', value: product.description.split(',')[0] },
+                { label: 'Chất liệu', value: product.description.split(',')[1] },
+                { label: 'Dây đeo', value: product.description.split(',')[2] }
+            ];
+        // Thêm case cho các loại sản phẩm khác
+        default:
+            return [];
+    }
 }
 
 function renderRelatedProducts(product) {

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tất cả sản phẩm - CreativeTeam</title>
+        <!-- CSS -->
+        <link rel="stylesheet" href="assets/css/reset.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/header.css" />
+        <link rel="stylesheet" href="assets/css/footer.css" />
+        <link rel="stylesheet" href="assets/css/products.css" />
+    </head>
+    <body>
+        <div id="header"></div>
+
+        <main class="main">
+            <div class="container">
+                <div class="products-page">
+                    <!-- Filter Section -->
+                    <aside class="products-filter">
+                        <h3 class="filter-title">Bộ lọc sản phẩm</h3>
+                        
+                        <div class="filter-group">
+                            <h4>Danh mục</h4>
+                            <div class="filter-options">
+                                <label class="filter-option">
+                                    <input type="checkbox" value="laptop">
+                                    Laptop
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" value="smartwatch">
+                                    Đồng hồ thông minh
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" value="headphone">
+                                    Tai nghe
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Giá</h4>
+                            <div class="filter-options">
+                                <label class="filter-option">
+                                    <input type="radio" name="price" value="0-5000000">
+                                    Dưới 5 triệu
+                                </label>
+                                <label class="filter-option">
+                                    <input type="radio" name="price" value="5000000-10000000">
+                                    5 - 10 triệu
+                                </label>
+                                <label class="filter-option">
+                                    <input type="radio" name="price" value="10000000-20000000">
+                                    10 - 20 triệu
+                                </label>
+                                <label class="filter-option">
+                                    <input type="radio" name="price" value="20000000+">
+                                    Trên 20 triệu
+                                </label>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Products Grid -->
+                    <div class="products-content">
+                        <div class="products-header">
+                            <h2 class="products-title">Tất cả sản phẩm</h2>
+                            <select class="products-sort">
+                                <option value="newest">Mới nhất</option>
+                                <option value="price-asc">Giá tăng dần</option>
+                                <option value="price-desc">Giá giảm dần</option>
+                            </select>
+                        </div>
+
+                        <div class="products-grid" id="productsGrid">
+                            <!-- Products will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="footer"></div>
+
+        <!-- JavaScript -->
+        <script src="assets/js/products.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/cart.js"></script>
+        <script src="assets/js/load-header.js"></script>
+    </body>
+</html> 
