@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CreativeTeam - Cửa hàng công nghệ</title>
+        <!-- Font Awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <!-- CSS -->
+        <link rel="stylesheet" href="assets/css/reset.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/header.css" />
+        <link rel="stylesheet" href="assets/css/footer.css" />
+        <link rel="stylesheet" href="assets/css/home.css" />
+        <!-- Thêm favicon -->
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/assets/images/favicon.ico"
+        />
+    </head>
+    <body>
+        <!-- Include header -->
+        <div id="header"></div>
+
+        <main class="main">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="container">
+                    <div class="hero__wrapper">
+                        <div class="hero__content">
+                            <h1 class="hero__title">
+                                Chào mừng đến với CreativeTeam
+                            </h1>
+                            <p class="hero__desc">
+                                Khám phá thế giới công nghệ với những sản phẩm
+                                chất lượng hàng đầu
+                            </p>
+                            <a
+                                href="/products"
+                                class="btn btn--primary hero__btn"
+                                >Khám phá ngay</a
+                            >
+                        </div>
+                        <div class="hero__image">
+                            <img
+                                src="assets/images/heroimg.png"
+                                alt="Hero Image"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Products -->
+            <section class="featured">
+                <div class="container">
+                    <h2 class="section-title">Sản phẩm nổi bật</h2>
+                    <div class="featured__slider">
+                        <div class="featured__wrapper">
+                            <!-- Products will be inserted here by JavaScript -->
+                        </div>
+                        <button class="featured__nav featured__nav--prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="featured__nav featured__nav--next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="featured__dots">
+                            <!-- Dots will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Laptop Section -->
+            <section class="products-section">
+                <div class="container">
+                    <h2 class="section-title">Laptop</h2>
+                    <div class="product-container" id="laptopProducts">
+                        <!-- Products will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Smartwatch Section -->
+            <section class="products-section">
+                <div class="container">
+                    <h2 class="section-title">Đồng hồ thông minh</h2>
+                    <div class="product-container" id="smartwatchProducts">
+                        <!-- Products will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Headphone Section -->
+            <section class="products-section">
+                <div class="container">
+                    <h2 class="section-title">Tai nghe</h2>
+                    <div class="product-container" id="headphoneProducts">
+                        <!-- Products will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section class="why-us">
+                <div class="container">
+                    <h2 class="section-title">Tại sao chọn chúng tôi</h2>
+                    <div class="why-us__grid">
+                        <div class="why-us__item">
+                            <div class="why-us__icon">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <h3 class="why-us__title">Giao hàng nhanh chóng</h3>
+                            <p class="why-us__desc">
+                                Miễn phí giao hàng cho đơn hàng từ 500.000đ
+                            </p>
+                        </div>
+                        <div class="why-us__item">
+                            <div class="why-us__icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3 class="why-us__title">Bảo hành chính hãng</h3>
+                            <p class="why-us__desc">
+                                Bảo hành chính hãng lên đến 24 tháng
+                            </p>
+                        </div>
+                        <div class="why-us__item">
+                            <div class="why-us__icon">
+                                <i class="fas fa-sync"></i>
+                            </div>
+                            <h3 class="why-us__title">Đổi trả dễ dàng</h3>
+                            <p class="why-us__desc">
+                                Đổi trả sản phẩm trong vòng 7 ngày
+                            </p>
+                        </div>
+                        <div class="why-us__item">
+                            <div class="why-us__icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <h3 class="why-us__title">Hỗ trợ 24/7</h3>
+                            <p class="why-us__desc">
+                                Tư vấn nhiệt tình mọi lúc mọi nơi
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Brands -->
+            <section class="brands">
+                <div class="container">
+                    <h2 class="section-title">Thương hiệu nổi bật</h2>
+                    <div class="brands__grid">
+                        <div class="brands__item">
+                            <img
+                                src="assets/images/brands/apple.png"
+                                alt="Apple"
+                            />
+                        </div>
+                        <div class="brands__item">
+                            <img
+                                src="assets/images/brands/samsung.png"
+                                alt="Samsung"
+                            />
+                        </div>
+                        <div class="brands__item">
+                            <img
+                                src="assets/images/brands/dell.png"
+                                alt="Dell"
+                            />
+                        </div>
+                        <div class="brands__item">
+                            <img
+                                src="assets/images/brands/sony.png"
+                                alt="Sony"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="view-more-container">
+                <a href="#" class="view-more-btn">Xem tất cả sản phẩm</a>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <div id="footer"></div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner"></div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+
+        <!-- JavaScript -->
+        <script src="assets/js/products.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/cart.js"></script>
+        <script src="assets/js/load-header.js"></script>
+    </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt hàng thành công - CreativeTeam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/thank-you.css">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="main">
+        <div class="container">
+            <div class="thank-you">
+                <div class="thank-you__icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h1 class="thank-you__title">Đặt hàng thành công!</h1>
+                
+                <p class="thank-you__message">
+                    Cảm ơn bạn đã đặt hàng. Mã đơn hàng của bạn là: <strong id="orderId"></strong>
+                </p>
+                
+                <div class="thank-you__info">
+                    <p>Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
+                    <p>Bạn có thể theo dõi đơn hàng trong mục "Đơn hàng của tôi".</p>
+                </div>
+                
+                <div class="thank-you__actions">
+                    <a href="/" class="btn btn--primary">Tiếp tục mua sắm</a>
+                    <a href="/profile" class="btn btn--secondary">Xem đơn hàng</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('orderId');
+            
+            if (orderId) {
+                document.getElementById('orderId').textContent = orderId;
+            }
+        });
+    </script>
+</body>
+</html> 

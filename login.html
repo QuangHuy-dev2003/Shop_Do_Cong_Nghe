@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Đăng nhập - CreativeTeam</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="assets/css/reset.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/auth.css" />
+    </head>
+    <body>
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="auth-header">
+                    <a href="#!" class="auth-logo">
+                        <img src="assets/image/Logo.png" alt="CreativeTeam" />
+                    </a>
+                    <h1 class="auth-title">Đăng nhập</h1>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required />
+                        <i class="fas fa-envelope"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mật khẩu</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                        />
+                        <i class="fas fa-lock"></i>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary auth-submit">
+                        Đăng nhập
+                    </button>
+
+                    <div class="auth-separator">
+                        <span>Hoặc đăng nhập bằng</span>
+                    </div>
+
+                    <div class="auth-social">
+                        <button type="button" class="btn btn--google">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button type="button" class="btn btn--facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </button>
+                    </div>
+
+                    <p class="auth-link">
+                        Chưa có tài khoản?
+                        <a href="./register.html">Đăng ký ngay</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loader" id="loadingSpinner" style="display: none"></div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/auth.js"></script>
+    </body>
+</html>

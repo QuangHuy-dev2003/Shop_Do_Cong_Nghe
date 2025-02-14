@@ -1,0 +1,129 @@
+.header {
+    background-color: var(--white-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.header__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.header__logo {
+    flex-shrink: 0;
+}
+
+.header__logo-img {
+    height: 70px;
+}
+
+.header__nav-list {
+    display: flex;
+    gap: 30px;
+}
+
+.header__nav-link {
+    font-weight: 500;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.header__nav-link:hover {
+    color: var(--button-color);
+}
+
+.header__actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header__search {
+    position: relative;
+    width: 300px;
+}
+
+.header__search-input {
+    width: 100%;
+    padding: 8px 40px 8px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 1.4rem;
+}
+
+.header__search-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.header__cart {
+    position: relative;
+}
+
+.header__cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--button-color);
+    color: var(--white-color);
+    font-size: 1.2rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.header__user {
+    position: relative;
+}
+
+.header__user-icon {
+    cursor: pointer;
+    padding: 8px;
+}
+
+.header__user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--white-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    min-width: 150px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.header__user:hover .header__user-dropdown {
+    display: block;
+}
+
+.header__user-link {
+    display: block;
+    padding: 10px 15px;
+    color: var(--text-color);
+    transition: background-color 0.3s ease;
+}
+
+.header__user-link:hover {
+    background-color: var(--gray-color);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

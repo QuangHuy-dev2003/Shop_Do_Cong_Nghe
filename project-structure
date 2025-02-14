@@ -1,0 +1,21 @@
+├── assets/
+│   ├── images/
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── products.js
+│   │   ├── cart.js
+│   │   ├── auth.js
+│   │   └── animation.js
+│   └── css/
+│       ├── reset.css
+│       ├── main.css
+│       ├── header.css
+│       ├── footer.css
+│       ├── home.css
+│       ├── products.css
+│       ├── cart.css
+│       └── auth.css
+├── components/
+│   ├── header.html
+│   └── footer.html
+└── index.html 

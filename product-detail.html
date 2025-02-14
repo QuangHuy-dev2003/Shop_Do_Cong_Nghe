@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chi tiết sản phẩm - CreativeTeam</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <link rel="stylesheet" href="assets/css/reset.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/header.css" />
+        <link rel="stylesheet" href="assets/css/footer.css" />
+        <link rel="stylesheet" href="assets/css/product-detail.css" />
+    </head>
+    <body>
+        <!-- Header -->
+        <div id="header"></div>
+
+        <main class="main">
+            <div class="container">
+                <div class="product-detail">
+                    <div class="product-detail__image">
+                        <img src="" alt="" id="productImage" />
+                    </div>
+
+                    <div class="product-detail__content">
+                        <h1 class="product-detail__title" id="productName"></h1>
+                        <div
+                            class="product-detail__price"
+                            id="productPrice"
+                        ></div>
+
+                        <div class="product-detail__quantity">
+                            <button class="quantity-btn minus">-</button>
+                            <input
+                                type="number"
+                                value="1"
+                                min="1"
+                                id="quantity"
+                            />
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+
+                        <div class="product-detail__actions">
+                            <button class="btn btn--primary" id="addToCartBtn">
+                                Thêm vào giỏ hàng
+                            </button>
+                            <button class="btn btn--secondary" id="buyNowBtn">
+                                Mua ngay
+                            </button>
+                        </div>
+
+                        <div
+                            class="product-detail__description"
+                            id="productDescription"
+                        ></div>
+                    </div>
+                </div>
+
+                <!-- Related Products -->
+                <section class="related-products">
+                    <h2 class="section-title">Sản phẩm liên quan</h2>
+                    <div class="products-grid" id="relatedProducts"></div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <div id="footer"></div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner"></div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+
+        <script src="assets/js/products.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/cart.js"></script>
+        <script src="assets/js/product-detail.js"></script>
+        <script src="assets/js/load-header.js"></script>
+    </body>
+</html>
