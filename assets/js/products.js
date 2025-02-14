@@ -260,6 +260,7 @@ function createProductCard(product) {
                 </div>
             </div>
         </div>
+        
     `;
 }
 
