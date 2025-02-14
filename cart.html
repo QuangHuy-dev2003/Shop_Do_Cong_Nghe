@@ -20,7 +20,13 @@
 
         <main class="main">
             <div class="container">
-                <h1 class="page-title">Giỏ hàng của bạn</h1>
+                <div class="cart-header">
+                    <h1 class="page-title">Giỏ hàng của bạn</h1>
+                    <button class="clear-cart-btn" id="clearCartBtn">
+                        <i class="fas fa-trash"></i>
+                        Xóa tất cả
+                    </button>
+                </div>
 
                 <div class="cart-wrapper">
                     <div class="cart-content">
@@ -98,6 +104,32 @@
                             Đặt hàng
                         </button>
                     </form>
+                </div>
+
+                <!-- Modal xác nhận xóa -->
+                <div
+                    class="modal-overlay"
+                    id="confirmModal"
+                    style="display: none"
+                >
+                    <div class="modal">
+                        <h3>Xác nhận xóa</h3>
+                        <p>Bạn có chắc chắn muốn xóa tất cả sản phẩm?</p>
+                        <div class="modal-buttons">
+                            <button
+                                class="btn btn--secondary"
+                                onclick="hideConfirmModal()"
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                class="btn btn--primary"
+                                onclick="clearCart()"
+                            >
+                                Xóa tất cả
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

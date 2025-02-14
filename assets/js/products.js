@@ -215,12 +215,26 @@ function getProductById(productId) {
     return foundProduct;
 }
 
-// Hàm lấy sản phẩm liên quan
-function getRelatedProducts(product, limit = 4) {
-    const allProducts = getProducts();
-    return allProducts[product.category]
-        .filter((p) => p.id !== product.id)
-        .slice(0, limit);
+// Thêm hàm getAllProducts
+function getAllProducts() {
+    const allProducts = [];
+    const categories = ["laptops", "smartwatches", "headphones"];
+
+    categories.forEach((category) => {
+        if (products[category]) {
+            allProducts.push(...products[category]);
+        }
+    });
+
+    return allProducts;
+}
+
+// Sửa lại hàm getRelatedProducts
+function getRelatedProducts(product) {
+    const allProducts = getAllProducts();
+    return allProducts
+        .filter((p) => p.category === product.category && p.id !== product.id)
+        .slice(0, 4); // Chỉ lấy 4 sản phẩm liên quan
 }
 
 // Hàm format giá tiền
@@ -336,4 +350,38 @@ function filterProducts() {
     }
 
     renderProducts(products);
+}
+
+function renderProducts(products) {
+    const productsGrid = document.getElementById("productsGrid");
+    if (!productsGrid) return;
+
+    showLoading(); // Hiển thị loader
+
+    setTimeout(() => {
+        productsGrid.innerHTML = products
+            .map(
+                (product) => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-card__image">
+                    <img src="${product.image}" alt="${product.name}">
+                </div>
+                <div class="product-card__content">
+                    <h3 class="product-card__title">${product.name}</h3>
+                    <div class="product-card__price">${formatPrice(
+                        product.price
+                    )}</div>
+                    <button class="btn btn--primary add-to-cart-btn" onclick="addToCart('${
+                        product.id
+                    }')">
+                        Thêm vào giỏ hàng
+                    </button>
+                </div>
+            </div>
+        `
+            )
+            .join("");
+
+        hideLoading(); // Ẩn loader
+    }, 500);
 }

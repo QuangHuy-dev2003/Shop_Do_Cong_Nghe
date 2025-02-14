@@ -2,7 +2,7 @@
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Thêm sản phẩm vào giỏ hàng
-function addToCart(productId) {
+function addToCart(productId, quantity = 1) {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
         showToast("Vui lòng đăng nhập để thêm vào giỏ hàng", "error");
@@ -12,20 +12,16 @@ function addToCart(productId) {
     const cartKey = `cart_${user.id}`;
     let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     
-    // Lấy thông tin sản phẩm từ products.js
-    const product = getProductById(productId);
-    if (!product) {
-        showToast("Không tìm thấy sản phẩm", "error");
-        return;
-    }
-
     const existingProduct = cart.find(item => item.id === productId);
     if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.quantity += quantity;
     } else {
+        const product = getProductById(productId);
+        if (!product) return;
+        
         cart.push({
             id: productId,
-            quantity: 1,
+            quantity: quantity,
             name: product.name,
             price: product.price,
             image: product.image
@@ -104,42 +100,83 @@ function updateCartTotal() {
 
 // Render giỏ hàng
 function renderCart() {
-    const cartContainer = document.getElementById('cartItems');
-    if (!cartContainer) return;
-    
-    if (cart.length === 0) {
-        cartContainer.innerHTML = `
+    const cartItems = document.getElementById('cartItems');
+    if (!cartItems) return;
+
+    showLoading();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        cartItems.innerHTML = `
             <div class="cart-empty">
                 <i class="fas fa-shopping-cart"></i>
-                <p>Giỏ hàng trống</p>
-                <a href="/" class="btn btn--primary">Tiếp tục mua sắm</a>
+                <p>Vui lòng đăng nhập để xem giỏ hàng</p>
+                <a href="/login.html" class="btn btn--primary">Đăng nhập</a>
             </div>
         `;
+        hideLoading();
         return;
     }
-    
-    cartContainer.innerHTML = cart.map(item => `
-        <div class="cart-item" data-id="${item.id}">
-            <div class="cart-item__image">
-                <img src="${item.image}" alt="${item.name}">
-            </div>
-            <div class="cart-item__content">
-                <h3 class="cart-item__title">${item.name}</h3>
-                <div class="cart-item__price">${formatPrice(item.price)}</div>
-                <div class="cart-item__quantity">
-                    <button class="quantity-btn minus">-</button>
-                    <input type="number" value="${item.quantity}" min="1" class="quantity-input">
-                    <button class="quantity-btn plus">+</button>
+
+    const cartKey = `cart_${user.id}`;
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    setTimeout(() => {
+        if (cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="cart-empty">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Giỏ hàng của bạn đang trống</p>
+                    <a href="/products.html" class="btn btn--primary">Mua sắm ngay</a>
                 </div>
-            </div>
-            <button class="cart-item__remove">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `).join('');
+            `;
+        } else {
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item" data-id="${item.id}" data-price="${item.price}">
+                    <input type="checkbox" class="cart-checkbox">
+                    <div class="cart-item__image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item__content">
+                        <h3 class="cart-item__title">${item.name}</h3>
+                        <div class="cart-item__price">${formatPrice(item.price)}</div>
+                        <div class="cart-item__quantity">
+                            <button class="quantity-btn minus" onclick="updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
+                            <input type="number" value="${item.quantity}" min="1" class="quantity-input" 
+                                   onchange="updateQuantity('${item.id}', this.value)">
+                            <button class="quantity-btn plus" onclick="updateQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                        </div>
+                    </div>
+                    <button class="cart-item__remove" onclick="removeFromCart('${item.id}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        hideLoading();
+    }, 500);
+}
+
+// Thêm hàm updateQuantity
+function updateQuantity(productId, newQuantity) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    const cartKey = `cart_${user.id}`;
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     
-    // Cập nhật tổng tiền
-    updateCartTotal();
+    if (newQuantity < 1) {
+        cart = cart.filter(item => item.id !== productId);
+    } else {
+        const item = cart.find(item => item.id === productId);
+        if (item) {
+            item.quantity = parseInt(newQuantity);
+        }
+    }
+
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    renderCart();
+    loadUserCart();
 }
 
 // Xử lý đặt hàng
@@ -178,4 +215,50 @@ function handleCheckout(event) {
 }
 
 // Gọi updateCartCount khi load trang và sau khi đăng nhập
-document.addEventListener("DOMContentLoaded", updateCartCount); 
+document.addEventListener("DOMContentLoaded", updateCartCount);
+
+// Load cart khi trang được load
+document.addEventListener('DOMContentLoaded', renderCart);
+
+// Thêm vào cart.js
+function showConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'flex';
+}
+
+function hideConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+}
+
+function clearCart() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    showLoading();
+    setTimeout(() => {
+        localStorage.removeItem(`cart_${user.id}`);
+        hideConfirmModal();
+        location.reload();
+    }, 1000);
+}
+
+// Thêm xử lý checkbox
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('cart-checkbox')) {
+        updateSelectedTotal();
+    }
+});
+
+function updateSelectedTotal() {
+    const checkboxes = document.querySelectorAll('.cart-checkbox:checked');
+    let total = 0;
+
+    checkboxes.forEach(checkbox => {
+        const cartItem = checkbox.closest('.cart-item');
+        const price = parseFloat(cartItem.dataset.price);
+        const quantity = parseInt(cartItem.querySelector('.quantity-input').value);
+        total += price * quantity;
+    });
+
+    document.getElementById('cartSubtotal').textContent = formatPrice(total);
+    document.getElementById('cartTotal').textContent = formatPrice(total + 30000);
+} 

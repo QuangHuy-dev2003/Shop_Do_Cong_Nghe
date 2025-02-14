@@ -69,12 +69,38 @@ function getProductSpecs(product) {
 }
 
 function renderRelatedProducts(product) {
-    const relatedProducts = getRelatedProducts(product);
-    const container = document.getElementById('relatedProducts');
+    const relatedContainer = document.getElementById('relatedProducts');
+    if (!relatedContainer) return;
+
+    showLoading();
+
+    // Lấy tất cả sản phẩm
+    const allProducts = getAllProducts();
     
-    container.innerHTML = relatedProducts
-        .map(product => createProductCard(product))
-        .join('');
+    // Lọc ra 4 sản phẩm ngẫu nhiên khác với sản phẩm hiện tại
+    const randomProducts = allProducts
+        .filter(p => p.id !== product.id)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 4);
+
+    setTimeout(() => {
+        relatedContainer.innerHTML = randomProducts.map(product => `
+            <div class="product-card">
+                <div class="product-card__image">
+                    <img src="${product.image}" alt="${product.name}">
+                </div>
+                <div class="product-card__content">
+                    <h3 class="product-card__title">${product.name}</h3>
+                    <div class="product-card__price">${formatPrice(product.price)}</div>
+                    <button class="btn btn--primary" onclick="addToCart('${product.id}')">
+                        Thêm vào giỏ hàng
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        hideLoading();
+    }, 500);
 }
 
 function setupQuantityButtons() {

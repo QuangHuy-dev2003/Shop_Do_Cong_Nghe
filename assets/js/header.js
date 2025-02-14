@@ -59,6 +59,21 @@ function updateUserMenu() {
     }
 }
 
+// Thêm hàm loadUserCart vào header.js
+function loadUserCart() {
+    const cartCountElement = document.querySelector(".header__cart-count");
+    if (!cartCountElement) return;
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+        const cartKey = `cart_${user.id}`;
+        const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        cartCountElement.textContent = cart.length;
+    } else {
+        cartCountElement.textContent = "0";
+    }
+}
+
 // Đảm bảo code chỉ chạy sau khi DOM đã load
 function initializeHeader() {
     console.log("Initializing header"); // Kiểm tra initialization
@@ -88,6 +103,7 @@ function initializeHeader() {
         });
 
         updateUserMenu();
+        loadUserCart(); // Thêm dòng này
     } catch (error) {
         console.error("Error in initializeHeader:", error);
     }
