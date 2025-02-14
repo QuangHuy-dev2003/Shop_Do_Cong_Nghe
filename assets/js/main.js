@@ -197,9 +197,16 @@ function initFeaturedSlider(totalSlides) {
     let currentIndex = 0;
     const slidesPerView = 4;
     const totalGroups = Math.ceil(totalSlides / slidesPerView);
+    const slideWidth = wrapper.offsetWidth / slidesPerView; // Tính chiều rộng mỗi slide
+
+    console.log("Chiều rộng mỗi slide:", slideWidth);
 
     function updateSlider() {
-        const offset = -currentIndex * wrapper.offsetWidth;
+        // Tính toán offset dựa trên chiều rộng của slide
+        const offset = -(currentIndex * slidesPerView * slideWidth);
+        console.log("Offset mới:", offset);
+
+        // Áp dụng transform
         wrapper.style.transform = `translateX(${offset}px)`;
 
         // Update active states
@@ -211,16 +218,32 @@ function initFeaturedSlider(totalSlides) {
             if (isInView) {
                 slide.classList.add("active");
                 slide.style.transform = "scale(1)";
+                slide.style.opacity = "1";
+                slide.style.visibility = "visible";
+                slide.style.transition = "all 0.5s ease";
             } else {
                 slide.classList.remove("active");
                 slide.style.transform = "scale(0.95)";
+                slide.style.opacity = "0";
+                slide.style.visibility = "hidden";
+                slide.style.transition = "all 0.5s ease";
             }
         });
 
-        // Update navigation và dots
         updateNavigation();
         updateDots();
     }
+
+    // Cập nhật CSS cho wrapper và slides
+    wrapper.style.display = "flex";
+    wrapper.style.width = `${slideWidth * totalSlides}px`; // Set chiều rộng tổng
+    wrapper.style.transition = "transform 0.5s ease";
+
+    // Set kích thước cố định cho mỗi slide
+    slides.forEach((slide) => {
+        slide.style.flex = `0 0 ${slideWidth}px`;
+        slide.style.width = `${slideWidth}px`;
+    });
 
     function updateNavigation() {
         prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
@@ -241,13 +264,35 @@ function initFeaturedSlider(totalSlides) {
     }
 
     function goToSlide(index) {
+        console.log("Chuyển đến index:", index);
         currentIndex = index;
-        if (currentIndex >= totalGroups) currentIndex = 0;
-        if (currentIndex < 0) currentIndex = totalGroups - 1;
+        if (currentIndex >= totalGroups) {
+            console.log("Quay về đầu slider");
+            currentIndex = 0;
+        }
+        if (currentIndex < 0) {
+            console.log("Chuyển đến cuối slider");
+            currentIndex = totalGroups - 1;
+        }
+        console.log("Current index sau khi điều chỉnh:", currentIndex);
         updateSlider();
     }
 
+    // Event listeners cho nút prev/next
+    prevBtn?.addEventListener("click", () => {
+        console.log("Click nút Previous");
+        console.log("Current index trước khi prev:", currentIndex);
+        goToSlide(currentIndex - 1);
+    });
+
+    nextBtn?.addEventListener("click", () => {
+        console.log("Click nút Next");
+        console.log("Current index trước khi next:", currentIndex);
+        goToSlide(currentIndex + 1);
+    });
+
     // Khởi tạo slider
+    console.log("Khởi tạo slider lần đầu");
     updateSlider();
 }
 

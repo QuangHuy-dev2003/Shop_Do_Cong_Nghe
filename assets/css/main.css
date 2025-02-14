@@ -392,27 +392,29 @@
 
 .featured__wrapper {
     display: flex;
-    gap: 20px;
-    overflow: hidden;
     position: relative;
-    padding: 10px 0;
     transition: transform 0.5s ease;
-    width: 100%;
+    gap: 20px;
+    padding: 10px 0;
 }
 
 .featured__slide {
-    flex: 0 0 calc((100% - 60px) / 4);
-    min-width: calc((100% - 60px) / 4);
-    transition: all 0.5s ease;
+    flex: 0 0 auto;
     opacity: 0;
     visibility: hidden;
+    transition: all 0.5s ease;
+    transform: scale(0.95);
 }
 
-/* Thêm style cho slide active */
 .featured__slide.active {
     opacity: 1;
     visibility: visible;
     transform: scale(1);
+}
+
+/* Thêm style cho wrapper container */
+.featured__slider .container {
+    overflow: hidden; /* Chỉ ẩn overflow ở container của slider */
 }
 
 .featured__nav {
