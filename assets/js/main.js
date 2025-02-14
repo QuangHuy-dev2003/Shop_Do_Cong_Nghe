@@ -149,29 +149,23 @@ function displayFeaturedProducts() {
     const slider = document.querySelector(".featured__slider");
     const wrapper = document.querySelector(".featured__wrapper");
 
-    if (!slider || !wrapper) {
-        console.error("Không tìm thấy slider hoặc wrapper");
-        return;
-    }
+    if (!slider || !wrapper) return;
 
     slider.classList.add("loading");
     slider.classList.remove("loaded");
 
     const featuredProducts = getFeaturedProducts();
-    console.log("Số lượng sản phẩm nổi bật:", featuredProducts.length);
 
     wrapper.innerHTML = featuredProducts
-        .map((product, index) => {
-            console.log(`Đang render sản phẩm ${index + 1}:`, product);
-            return `
-                <div class="featured__slide" data-index="${index}">
-                    ${createProductCard(product)}
-                </div>
-            `;
-        })
+        .map(
+            (product, index) => `
+            <div class="featured__slide" data-index="${index}">
+                ${createProductCard(product)}
+            </div>
+        `
+        )
         .join("");
 
-    // Khởi tạo slider
     initFeaturedSlider(featuredProducts.length);
 
     setTimeout(() => {
@@ -181,7 +175,6 @@ function displayFeaturedProducts() {
         const slides = wrapper.querySelectorAll(".featured__slide");
         slides.forEach((slide, index) => {
             if (index < 3) {
-                // Chỉ active 3 slides đầu tiên
                 slide.classList.add("active");
             }
         });
@@ -198,19 +191,12 @@ function initFeaturedSlider(totalSlides) {
     let currentIndex = 0;
     const slidesPerView = 3;
     const totalGroups = Math.ceil(totalSlides / slidesPerView);
-    const slideWidth = (wrapper.offsetWidth - 30) / 3; // Trừ đi tổng gap (15px * 2)
-
-    console.log("Chiều rộng mỗi slide:", slideWidth);
+    const slideWidth = (wrapper.offsetWidth - 30) / 3;
 
     function updateSlider() {
-        // Tính toán offset dựa trên chiều rộng của slide
         const offset = -(currentIndex * slidesPerView * slideWidth);
-        console.log("Offset mới:", offset);
-
-        // Áp dụng transform
         wrapper.style.transform = `translateX(${offset}px)`;
 
-        // Update active states
         slides.forEach((slide, index) => {
             const isInView =
                 index >= currentIndex * slidesPerView &&
@@ -221,13 +207,11 @@ function initFeaturedSlider(totalSlides) {
                 slide.style.transform = "scale(1)";
                 slide.style.opacity = "1";
                 slide.style.visibility = "visible";
-                slide.style.transition = "all 0.5s ease";
             } else {
                 slide.classList.remove("active");
                 slide.style.transform = "scale(0.95)";
                 slide.style.opacity = "0";
                 slide.style.visibility = "hidden";
-                slide.style.transition = "all 0.5s ease";
             }
         });
 
@@ -239,10 +223,9 @@ function initFeaturedSlider(totalSlides) {
     wrapper.style.display = "flex";
     wrapper.style.width = `${
         slideWidth * totalSlides + (totalSlides - 1) * 15
-    }px`; // Thêm gap vào tổng width
+    }px`;
     wrapper.style.transition = "transform 0.5s ease";
 
-    // Set kích thước cố định cho mỗi slide
     slides.forEach((slide) => {
         slide.style.flex = `0 0 ${slideWidth}px`;
         slide.style.width = `${slideWidth}px`;
@@ -267,35 +250,15 @@ function initFeaturedSlider(totalSlides) {
     }
 
     function goToSlide(index) {
-        console.log("Chuyển đến index:", index);
         currentIndex = index;
-        if (currentIndex >= totalGroups) {
-            console.log("Quay về đầu slider");
-            currentIndex = 0;
-        }
-        if (currentIndex < 0) {
-            console.log("Chuyển đến cuối slider");
-            currentIndex = totalGroups - 1;
-        }
-        console.log("Current index sau khi điều chỉnh:", currentIndex);
+        if (currentIndex >= totalGroups) currentIndex = 0;
+        if (currentIndex < 0) currentIndex = totalGroups - 1;
         updateSlider();
     }
 
-    // Event listeners cho nút prev/next
-    prevBtn?.addEventListener("click", () => {
-        console.log("Click nút Previous");
-        console.log("Current index trước khi prev:", currentIndex);
-        goToSlide(currentIndex - 1);
-    });
+    prevBtn?.addEventListener("click", () => goToSlide(currentIndex - 1));
+    nextBtn?.addEventListener("click", () => goToSlide(currentIndex + 1));
 
-    nextBtn?.addEventListener("click", () => {
-        console.log("Click nút Next");
-        console.log("Current index trước khi next:", currentIndex);
-        goToSlide(currentIndex + 1);
-    });
-
-    // Khởi tạo slider
-    console.log("Khởi tạo slider lần đầu");
     updateSlider();
 }
 
