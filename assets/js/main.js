@@ -149,31 +149,44 @@ function displayFeaturedProducts() {
     const slider = document.querySelector(".featured__slider");
     const wrapper = document.querySelector(".featured__wrapper");
 
-    if (!slider || !wrapper) return;
+    if (!slider || !wrapper) {
+        console.error("Không tìm thấy slider hoặc wrapper");
+        return;
+    }
 
     slider.classList.add("loading");
+    slider.classList.remove("loaded");
 
     const featuredProducts = getFeaturedProducts();
+    console.log("Số lượng sản phẩm nổi bật:", featuredProducts.length);
 
     wrapper.innerHTML = featuredProducts
-        .map(
-            (product, index) => `
-            <div class="featured__slide ${index < 4 ? "active" : ""}">
-                ${createProductCard(product)}
-            </div>
-        `
-        )
+        .map((product, index) => {
+            console.log(`Đang render sản phẩm ${index + 1}:`, product);
+            return `
+                <div class="featured__slide" data-index="${index}">
+                    ${createProductCard(product)}
+                </div>
+            `;
+        })
         .join("");
 
-    // Khởi tạo slider sau khi render
+    // Khởi tạo slider
     initFeaturedSlider(featuredProducts.length);
 
-    // Xóa loading và thêm loaded class
-    slider.classList.remove("loading");
-    slider.classList.add("loaded");
+    setTimeout(() => {
+        slider.classList.remove("loading");
+        slider.classList.add("loaded");
+
+        const slides = wrapper.querySelectorAll(".featured__slide");
+        slides.forEach((slide, index) => {
+            if (index < 4) {
+                slide.classList.add("active");
+            }
+        });
+    }, 100);
 }
 
-// Cập nhật lại hàm initFeaturedSlider
 function initFeaturedSlider(totalSlides) {
     const wrapper = document.querySelector(".featured__wrapper");
     const slides = wrapper.querySelectorAll(".featured__slide");
@@ -182,20 +195,8 @@ function initFeaturedSlider(totalSlides) {
     const dotsContainer = document.querySelector(".featured__dots");
 
     let currentIndex = 0;
-    let autoSlideInterval;
-    const slidesPerView = 4; // Thay đổi từ 3 thành 4
+    const slidesPerView = 4;
     const totalGroups = Math.ceil(totalSlides / slidesPerView);
-
-    // Reset dots
-    dotsContainer.innerHTML = "";
-
-    // Tạo dots
-    Array.from({ length: totalGroups }).forEach((_, i) => {
-        const dot = document.createElement("div");
-        dot.className = `featured__dot ${i === 0 ? "active" : ""}`;
-        dot.addEventListener("click", () => goToSlide(i));
-        dotsContainer.appendChild(dot);
-    });
 
     function updateSlider() {
         const offset = -currentIndex * wrapper.offsetWidth;
@@ -206,98 +207,48 @@ function initFeaturedSlider(totalSlides) {
             const isInView =
                 index >= currentIndex * slidesPerView &&
                 index < (currentIndex + 1) * slidesPerView;
-            slide.classList.toggle("active", isInView);
+
+            if (isInView) {
+                slide.classList.add("active");
+                slide.style.transform = "scale(1)";
+            } else {
+                slide.classList.remove("active");
+                slide.style.transform = "scale(0.95)";
+            }
         });
 
-        // Update dots
-        dotsContainer
-            .querySelectorAll(".featured__dot")
-            .forEach((dot, index) =>
-                dot.classList.toggle("active", index === currentIndex)
-            );
+        // Update navigation và dots
+        updateNavigation();
+        updateDots();
+    }
 
-        // Update navigation buttons
+    function updateNavigation() {
         prevBtn.style.display = currentIndex > 0 ? "flex" : "none";
         nextBtn.style.display =
             currentIndex < totalGroups - 1 ? "flex" : "none";
     }
 
+    function updateDots() {
+        dotsContainer.innerHTML = "";
+        for (let i = 0; i < totalGroups; i++) {
+            const dot = document.createElement("div");
+            dot.className = `featured__dot ${
+                i === currentIndex ? "active" : ""
+            }`;
+            dot.addEventListener("click", () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+    }
+
     function goToSlide(index) {
         currentIndex = index;
-        if (currentIndex >= Math.ceil(totalSlides / 4)) currentIndex = 0;
-        if (currentIndex < 0) currentIndex = Math.ceil(totalSlides / 4) - 1;
+        if (currentIndex >= totalGroups) currentIndex = 0;
+        if (currentIndex < 0) currentIndex = totalGroups - 1;
         updateSlider();
     }
-
-    function nextSlide() {
-        goToSlide(currentIndex + 1);
-    }
-
-    function prevSlide() {
-        goToSlide(currentIndex - 1);
-    }
-
-    // Xử lý nút điều hướng
-    prevBtn?.addEventListener("click", () => {
-        prevSlide();
-        resetAutoSlide();
-    });
-
-    nextBtn?.addEventListener("click", () => {
-        nextSlide();
-        resetAutoSlide();
-    });
-
-    // Auto slide
-    function startAutoSlide() {
-        autoSlideInterval = setInterval(nextSlide, 3000);
-    }
-
-    function resetAutoSlide() {
-        clearInterval(autoSlideInterval);
-        startAutoSlide();
-    }
-
-    // Touch events cho mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    wrapper.addEventListener(
-        "touchstart",
-        (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            clearInterval(autoSlideInterval);
-        },
-        { passive: true }
-    );
-
-    wrapper.addEventListener(
-        "touchend",
-        (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    nextSlide();
-                } else {
-                    prevSlide();
-                }
-            }
-
-            startAutoSlide();
-        },
-        { passive: true }
-    );
 
     // Khởi tạo slider
     updateSlider();
-    startAutoSlide();
-
-    // Thêm xử lý resize
-    window.addEventListener("resize", () => {
-        updateSlider();
-    });
 }
 
 // Hiển thị/ẩn loading
