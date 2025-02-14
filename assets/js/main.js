@@ -180,7 +180,8 @@ function displayFeaturedProducts() {
 
         const slides = wrapper.querySelectorAll(".featured__slide");
         slides.forEach((slide, index) => {
-            if (index < 4) {
+            if (index < 3) {
+                // Chỉ active 3 slides đầu tiên
                 slide.classList.add("active");
             }
         });
@@ -195,9 +196,9 @@ function initFeaturedSlider(totalSlides) {
     const dotsContainer = document.querySelector(".featured__dots");
 
     let currentIndex = 0;
-    const slidesPerView = 4;
+    const slidesPerView = 3;
     const totalGroups = Math.ceil(totalSlides / slidesPerView);
-    const slideWidth = wrapper.offsetWidth / slidesPerView; // Tính chiều rộng mỗi slide
+    const slideWidth = (wrapper.offsetWidth - 30) / 3; // Trừ đi tổng gap (15px * 2)
 
     console.log("Chiều rộng mỗi slide:", slideWidth);
 
@@ -236,7 +237,9 @@ function initFeaturedSlider(totalSlides) {
 
     // Cập nhật CSS cho wrapper và slides
     wrapper.style.display = "flex";
-    wrapper.style.width = `${slideWidth * totalSlides}px`; // Set chiều rộng tổng
+    wrapper.style.width = `${
+        slideWidth * totalSlides + (totalSlides - 1) * 15
+    }px`; // Thêm gap vào tổng width
     wrapper.style.transition = "transform 0.5s ease";
 
     // Set kích thước cố định cho mỗi slide

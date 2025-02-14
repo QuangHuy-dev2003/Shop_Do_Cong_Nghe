@@ -377,7 +377,7 @@
 /* Featured slider styles */
 .featured__slider {
     position: relative;
-    padding: 0 40px;
+    padding: 0 60px; /* Tăng padding để chứa nút điều hướng */
     margin-bottom: 40px;
     min-height: 450px;
     opacity: 0;
@@ -394,16 +394,17 @@
     display: flex;
     position: relative;
     transition: transform 0.5s ease;
-    gap: 20px;
+    gap: 15px; /* Giảm khoảng cách giữa các slides */
     padding: 10px 0;
 }
 
 .featured__slide {
-    flex: 0 0 auto;
+    flex: 0 0 calc((100% - 30px) / 3); /* Chia đều cho 3 slides với gap 15px */
     opacity: 0;
     visibility: hidden;
     transition: all 0.5s ease;
     transform: scale(0.95);
+    padding: 10px; /* Thêm padding cho slide */
 }
 
 .featured__slide.active {
@@ -412,11 +413,7 @@
     transform: scale(1);
 }
 
-/* Thêm style cho wrapper container */
-.featured__slider .container {
-    overflow: hidden; /* Chỉ ẩn overflow ở container của slider */
-}
-
+/* Điều chỉnh lại vị trí nút điều hướng */
 .featured__nav {
     position: absolute;
     top: 50%;
@@ -436,11 +433,22 @@
 }
 
 .featured__nav--prev {
-    left: -20px;
+    left: 10px; /* Di chuyển nút prev vào trong */
 }
 
 .featured__nav--next {
-    right: -20px;
+    right: 10px; /* Di chuyển nút next vào trong */
+}
+
+.featured__nav:hover {
+    background-color: var(--button-color);
+    color: var(--white-color);
+}
+
+/* Container styles */
+.featured__slider .container {
+    overflow: hidden;
+    padding: 0 40px; /* Thêm padding cho container */
 }
 
 /* Thêm loading indicator */
@@ -495,102 +503,26 @@
     background: var(--button-color);
 }
 
-/* Navigation buttons */
-.featured__nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--white-color);
-    border: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 20;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.featured__nav:hover {
-    background-color: var(--button-color);
-    color: var(--white-color);
-}
-
-.featured__nav--prev {
-    left: -20px;
-}
-
-.featured__nav--next {
-    right: -20px;
-}
-
-/* Responsive styles */
+/* Responsive */
 @media (max-width: 1200px) {
-    .laptop-card,
-    .device-card {
-        flex: 0 0 calc((100% - 40px) / 3); /* 3 card trên màn hình lớn */
-    }
     .featured__slide {
-        min-width: calc((100% - 20px) / 2); /* 2 sản phẩm trên tablet */
+        flex: 0 0 calc((100% - 20px) / 3);
     }
 }
 
 @media (max-width: 992px) {
-    .laptop-card,
-    .device-card {
-        flex: 0 0 calc((100% - 20px) / 2); /* 2 card trên tablet */
-    }
-
-    .card-title {
-        font-size: 1.4rem;
-        height: 4rem;
+    .featured__slide {
+        flex: 0 0 calc((100% - 15px) / 2);
     }
 }
 
 @media (max-width: 768px) {
-    .laptop-card,
-    .device-card {
-        flex: 0 0 280px;
-        min-width: 280px;
-        height: 400px;
-    }
-
-    .laptop-card__image,
-    .device-card__image {
-        height: 220px;
-    }
-
-    .card-actions .btn {
-        font-size: 1.3rem;
-        padding: 8px;
-    }
     .featured__slide {
-        min-width: 100%; /* 1 sản phẩm trên mobile */
+        flex: 0 0 100%;
     }
 
-    .card-title {
-        font-size: 1.4rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .laptop-card,
-    .device-card {
-        flex: 0 0 260px;
-        min-width: 260px;
-        height: 380px;
-    }
-
-    .laptop-card__image,
-    .device-card__image {
-        height: 200px;
-    }
-
-    .card-title {
-        font-size: 1.3rem;
+    .featured__slider {
+        padding: 0 40px;
     }
 }
 
