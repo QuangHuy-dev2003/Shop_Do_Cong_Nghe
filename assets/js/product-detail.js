@@ -77,11 +77,28 @@ function renderRelatedProducts(product) {
     // Lấy tất cả sản phẩm
     const allProducts = getAllProducts();
     
-    // Lọc ra 4 sản phẩm ngẫu nhiên khác với sản phẩm hiện tại
-    const randomProducts = allProducts
-        .filter(p => p.id !== product.id)
+    // Lấy 4 sản phẩm ngẫu nhiên từ mỗi danh mục
+    const categories = ['laptops', 'smartwatches', 'headphones'];
+    let randomProducts = [];
+    
+    categories.forEach(category => {
+        const categoryProducts = allProducts
+            .filter(p => p.category === category && p.id !== product.id);
+        if (categoryProducts.length > 0) {
+            const randomProduct = categoryProducts[Math.floor(Math.random() * categoryProducts.length)];
+            randomProducts.push(randomProduct);
+        }
+    });
+
+    // Thêm 1 sản phẩm từ cùng danh mục với sản phẩm hiện tại
+    const sameCategory = allProducts
+        .filter(p => p.category === product.category && p.id !== product.id)
         .sort(() => 0.5 - Math.random())
         .slice(0, 4);
+    
+    if (sameCategory.length > 0) {
+        randomProducts.unshift(sameCategory[0]);
+    }
 
     setTimeout(() => {
         relatedContainer.innerHTML = randomProducts.map(product => `

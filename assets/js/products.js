@@ -282,7 +282,10 @@ function createProductCard(product) {
 document.addEventListener("DOMContentLoaded", () => {
     let allProducts = getAllProducts();
     renderProducts(allProducts);
-    setupFilters();
+    // Chỉ chạy setupFilters nếu đang ở trang products.html
+    if (window.location.pathname.includes("products.html")) {
+        setupFilters();
+    }
 });
 
 function setupFilters() {

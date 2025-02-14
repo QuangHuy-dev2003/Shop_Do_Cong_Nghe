@@ -74,6 +74,14 @@ function loadUserCart() {
     }
 }
 
+// Thêm event listener cho đăng nhập thành công
+document.addEventListener('loginSuccess', (e) => {
+    const user = e.detail;
+    if (user) {
+        loadUserCart(); // Load lại giỏ hàng khi đăng nhập
+    }
+});
+
 // Đảm bảo code chỉ chạy sau khi DOM đã load
 function initializeHeader() {
     console.log("Initializing header"); // Kiểm tra initialization

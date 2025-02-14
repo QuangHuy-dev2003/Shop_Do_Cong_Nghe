@@ -85,28 +85,32 @@
 }
 
 .cart-item__quantity {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 5px;
 }
 
 .quantity-btn {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    border: 1px solid var(--border-color);
-    background: white;
+    border: none;
+    background: var(--gray-color);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.quantity-btn:hover {
-    background: var(--button-color);
-    color: white;
-    border-color: var(--button-color);
+.quantity-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-size: 1rem;
 }
 
 .cart-item__remove {
@@ -176,6 +180,21 @@
     width: 100%;
     padding: 15px;
     font-size: 1.6rem;
+    background: var(--button-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+    opacity: 0.9;
+}
+
+.checkout-btn:disabled {
+    background: var(--gray-color);
+    cursor: not-allowed;
 }
 
 /* Checkout Form */
@@ -236,17 +255,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin: 30px 0;
+    padding-top: 20px;
 }
 
 .clear-cart-btn {
-    color: #ff4444;
-    border: none;
-    background: none;
-    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clear-cart-btn:hover {
+    background: #cc0000;
+}
+
+.clear-cart-btn i {
+    font-size: 1.2rem;
 }
 
 /* Modal xác nhận xóa */
@@ -256,28 +287,57 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    animation: fadeIn 0.3s ease;
 }
 
 .modal {
-    background: white;
+    background-color: #fff !important;
     padding: 30px;
     border-radius: 8px;
     width: 400px;
     text-align: center;
-    animation: zoomIn 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.modal p {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
 }
 
 .modal-buttons {
     display: flex;
     gap: 15px;
     justify-content: center;
-    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 10px 25px;
+    font-size: 1.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-buttons .btn--secondary {
+    background-color: var(--gray-color);
+    color: var(--text-color);
+}
+
+.modal-buttons .btn--primary {
+    background-color: var(--button-color);
+    color: white;
 }
 
 @keyframes slideIn {
@@ -300,4 +360,33 @@
         opacity: 1;
         transform: scale(1);
     }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn.active {
+    background: var(--button-color);
+    color: white;
+    border-color: var(--button-color);
+}
+
+.main {
+    margin-top: 80px;
+    min-height: calc(100vh - 80px);
+    background-color: var(--background-color);
 } 

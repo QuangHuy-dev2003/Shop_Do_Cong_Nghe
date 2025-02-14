@@ -30,6 +30,8 @@ async function handleLogin(event) {
                 id: user.id,
                 name: user.name,
                 email: user.email,
+                phone: user.phone,
+                address: user.address,
                 role: user.role || "USER",
             };
             localStorage.setItem("user", JSON.stringify(userInfo));
@@ -116,9 +118,25 @@ async function handleRegister(event) {
 }
 
 // Xử lý đăng xuất
-function handleLogout() {
+function logout() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    // Không xóa giỏ hàng khi đăng xuất
+    // const cartKey = `cart_${user.id}`;
+    // localStorage.removeItem(cartKey);
+
     localStorage.removeItem("user");
-    window.location.href = "/";
+    updateUserMenu();
+    showToast("Đăng xuất thành công");
+
+    // Nếu đang ở trang checkout hoặc cart thì chuyển về trang chủ
+    if (
+        window.location.pathname.includes("checkout.html") ||
+        window.location.pathname.includes("cart.html")
+    ) {
+        window.location.href = "/";
+    }
 }
 
 // Cập nhật UI theo trạng thái đăng nhập
@@ -131,7 +149,7 @@ function updateAuthUI() {
             userDropdown.innerHTML = `
                 <span class="header__user-name">${user.name}</span>
                 <a href="/profile" class="header__user-link">Tài khoản của tôi</a>
-                <button class="header__user-link" onclick="handleLogout()">Đăng xuất</button>
+                <button class="header__user-link" onclick="logout()">Đăng xuất</button>
             `;
         } else {
             userDropdown.innerHTML = `
@@ -203,5 +221,32 @@ function initAdminAccount() {
             role: "ADMIN",
         });
         localStorage.setItem("users", JSON.stringify(users));
+    }
+}
+
+function login(email, password) {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(
+        (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        updateUserMenu();
+        showToast("Đăng nhập thành công");
+
+        // Dispatch event đăng nhập thành công
+        const loginEvent = new CustomEvent("loginSuccess", { detail: user });
+        document.dispatchEvent(loginEvent);
+
+        // Load giỏ hàng của user
+        loadUserCart();
+
+        // Chuyển hướng về trang trước đó hoặc trang chủ
+        const returnUrl = localStorage.getItem("returnUrl") || "/";
+        localStorage.removeItem("returnUrl");
+        window.location.href = returnUrl;
+    } else {
+        showToast("Email hoặc mật khẩu không đúng", "error");
     }
 }

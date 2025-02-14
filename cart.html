@@ -22,7 +22,7 @@
             <div class="container">
                 <div class="cart-header">
                     <h1 class="page-title">Giỏ hàng của bạn</h1>
-                    <button class="clear-cart-btn" id="clearCartBtn">
+                    <button class="clear-cart-btn" onclick="showConfirmModal()">
                         <i class="fas fa-trash"></i>
                         Xóa tất cả
                     </button>
@@ -54,7 +54,7 @@
 
                             <button
                                 class="btn btn--primary checkout-btn"
-                                id="checkoutBtn"
+                                onclick="handleCheckout()"
                             >
                                 Tiến hành thanh toán
                             </button>
