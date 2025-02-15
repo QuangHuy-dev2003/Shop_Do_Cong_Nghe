@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Thông tin cá nhân - CreativeTeam</title>
+        <link rel="stylesheet" href="assets/css/reset.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/header.css" />
+        <link rel="stylesheet" href="assets/css/footer.css" />
+        <link rel="stylesheet" href="assets/css/profile.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div id="header"></div>
+
+        <div class="loader-overlay">
+            <div class="loader"></div>
+        </div>
+
+        <main class="main">
+            <div class="container">
+                <div class="profile">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <img src="" alt="Avatar" id="userAvatar" />
+                            <button class="profile-avatar__edit">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <h1 class="profile-name" id="userName">
+                            Tên người dùng
+                        </h1>
+                        <p class="profile-email" id="userEmail">
+                            email@example.com
+                        </p>
+                    </div>
+
+                    <div class="profile-content">
+                        <div class="profile-section">
+                            <h2 class="profile-section__title">
+                                Thông tin cá nhân
+                            </h2>
+                            <form class="profile-form" id="profileForm">
+                                <div class="profile-form__group">
+                                    <label>Họ và tên</label>
+                                    <input
+                                        type="text"
+                                        id="fullName"
+                                        name="fullName"
+                                    />
+                                </div>
+                                <div class="profile-form__group">
+                                    <label>Email</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        readonly
+                                        disabled
+                                        style="background-color: #f5f5f5"
+                                    />
+                                </div>
+                                <div class="profile-form__group">
+                                    <label>Số điện thoại</label>
+                                    <input type="tel" id="phone" name="phone" />
+                                </div>
+                                <div class="profile-form__group">
+                                    <label>Địa chỉ</label>
+                                    <textarea
+                                        id="address"
+                                        name="address"
+                                        rows="3"
+                                    ></textarea>
+                                </div>
+                                <button type="submit" class="btn btn--primary">
+                                    Cập nhật thông tin
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="profile-section">
+                            <h2 class="profile-section__title">Đổi mật khẩu</h2>
+                            <form class="profile-form" id="passwordForm">
+                                <div class="profile-form__group">
+                                    <label>Mật khẩu hiện tại</label>
+                                    <input
+                                        type="password"
+                                        name="currentPassword"
+                                        required
+                                    />
+                                </div>
+                                <div class="profile-form__group">
+                                    <label>Mật khẩu mới</label>
+                                    <input
+                                        type="password"
+                                        name="newPassword"
+                                        required
+                                    />
+                                </div>
+                                <div class="profile-form__group">
+                                    <label>Xác nhận mật khẩu mới</label>
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" class="btn btn--primary">
+                                    Đổi mật khẩu
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="footer"></div>
+
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/profile.js"></script>
+        <script src="assets/js/load-header.js"></script>
+    </body>
+</html>

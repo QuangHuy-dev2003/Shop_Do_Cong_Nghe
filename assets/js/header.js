@@ -26,7 +26,7 @@ function updateUserMenu() {
                     <i class="fas fa-user-circle"></i>
                     Thông tin tài khoản
                 </a>
-                <a href="/orders.html" class="header__user-link">
+                <a href="/order-history.html" class="header__user-link">
                     <i class="fas fa-history"></i>
                     Lịch sử mua hàng
                 </a>

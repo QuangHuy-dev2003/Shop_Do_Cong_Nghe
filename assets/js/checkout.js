@@ -288,3 +288,27 @@ document
             window.location.href = `thank-you.html?orderId=${orderId}`;
         }, 1000);
     });
+
+function saveOrder(orderData) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) return;
+
+    // Thêm thông tin người dùng vào order
+    orderData.userEmail = user.email;
+    orderData.date = new Date();
+    orderData.id = generateOrderId();
+    orderData.status = 'pending';
+
+    // Lấy danh sách orders hiện tại
+    const orders = JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
+    
+    // Thêm order mới vào đầu danh sách
+    orders.unshift(orderData);
+    
+    // Lưu lại vào localStorage
+    localStorage.setItem(`orders_${user.email}`, JSON.stringify(orders));
+}
+
+function generateOrderId() {
+    return 'ORD' + Date.now().toString().slice(-6);
+}
