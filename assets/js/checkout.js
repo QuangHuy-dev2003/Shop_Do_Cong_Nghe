@@ -191,29 +191,29 @@ function handleOrder(e) {
         return;
     }
 
-    // Kiểm tra các trường bắt buộc
-    const name = formData.get("name");
-    const phone = formData.get("phone");
-    const address = formData.get("address");
-
-    if (!name || !phone || !address) {
-        showToast("Vui lòng điền đầy đủ thông tin", "error");
-        return;
-    }
+    // Lấy thông tin chi tiết sản phẩm
+    const allProducts = getAllProducts();
+    const itemsWithDetails = orderData.items.map((item) => {
+        const product = allProducts.find((p) => p.id === item.id);
+        return {
+            ...item,
+            name: product.name,
+            image: product.image,
+        };
+    });
 
     showLoading();
     setTimeout(() => {
-        // Tạo mã đơn hàng với userId
         const orderId = `DH${user.id}_${Date.now()}`;
 
         const newOrder = {
             id: orderId,
-            items: orderData.items,
+            items: itemsWithDetails, // Lưu thông tin chi tiết sản phẩm
             total: orderData.total,
             customer: {
-                name: name,
-                phone: phone,
-                address: address,
+                name: formData.get("name"),
+                phone: formData.get("phone"),
+                address: formData.get("address"),
             },
             userId: user.id,
             status: "pending",
@@ -290,25 +290,26 @@ document
     });
 
 function saveOrder(orderData) {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
 
     // Thêm thông tin người dùng vào order
     orderData.userEmail = user.email;
     orderData.date = new Date();
     orderData.id = generateOrderId();
-    orderData.status = 'pending';
+    orderData.status = "pending";
 
     // Lấy danh sách orders hiện tại
-    const orders = JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
-    
+    const orders =
+        JSON.parse(localStorage.getItem(`orders_${user.email}`)) || [];
+
     // Thêm order mới vào đầu danh sách
     orders.unshift(orderData);
-    
+
     // Lưu lại vào localStorage
     localStorage.setItem(`orders_${user.email}`, JSON.stringify(orders));
 }
 
 function generateOrderId() {
-    return 'ORD' + Date.now().toString().slice(-6);
+    return "ORD" + Date.now().toString().slice(-6);
 }
