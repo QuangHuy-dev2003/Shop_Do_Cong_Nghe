@@ -22,9 +22,13 @@ function updateUserMenu() {
                 <div class="header__user-info">
                     <div class="header__user-greeting">Xin chào, ${user.name}</div>
                 </div>
-                <a href="/profile" class="header__user-link">
+                <a href="/profile.html" class="header__user-link">
                     <i class="fas fa-user-circle"></i>
                     Thông tin tài khoản
+                </a>
+                <a href="/orders.html" class="header__user-link">
+                    <i class="fas fa-history"></i>
+                    Lịch sử mua hàng
                 </a>
                 <a href="#" class="header__user-link" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i>
@@ -36,19 +40,17 @@ function updateUserMenu() {
             const logoutBtn = document.getElementById("logoutBtn");
             logoutBtn?.addEventListener("click", (e) => {
                 e.preventDefault();
-                localStorage.removeItem("user");
-                localStorage.removeItem(`cart_${user.id}`); // Xóa giỏ hàng của user
-                window.location.href = "/"; // Chuyển về trang chủ
+                logout();
             });
         } else {
             console.log("No user logged in");
             // Chưa đăng nhập
             userDropdown.innerHTML = `
-                <a href="./login.html" class="header__user-link">
+                <a href="/login.html" class="header__user-link">
                     <i class="fas fa-sign-in-alt"></i>
                     Đăng nhập
                 </a>
-                <a href="./register.html" class="header__user-link">
+                <a href="/register.html" class="header__user-link">
                     <i class="fas fa-user-plus"></i>
                     Đăng ký
                 </a>

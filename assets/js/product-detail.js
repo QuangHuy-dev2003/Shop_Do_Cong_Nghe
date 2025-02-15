@@ -41,7 +41,7 @@ function renderProductDetail(product) {
     setupBuyNowButton(product);
 
     // Render sản phẩm liên quan
-    renderRelatedProducts(product);
+    displayRelatedProducts(product);
 }
 
 function getProductSpecs(product) {
@@ -68,56 +68,37 @@ function getProductSpecs(product) {
     }
 }
 
-function renderRelatedProducts(product) {
-    const relatedContainer = document.getElementById('relatedProducts');
-    if (!relatedContainer) return;
-
-    showLoading();
-
-    // Lấy tất cả sản phẩm
-    const allProducts = getAllProducts();
+function displayRelatedProducts(product) {
+    const relatedProducts = getRelatedProducts(product);
+    const relatedProductsContainer = document.getElementById('relatedProducts');
     
-    // Lấy 4 sản phẩm ngẫu nhiên từ mỗi danh mục
-    const categories = ['laptops', 'smartwatches', 'headphones'];
-    let randomProducts = [];
+    if (!relatedProductsContainer) return;
     
-    categories.forEach(category => {
-        const categoryProducts = allProducts
-            .filter(p => p.category === category && p.id !== product.id);
-        if (categoryProducts.length > 0) {
-            const randomProduct = categoryProducts[Math.floor(Math.random() * categoryProducts.length)];
-            randomProducts.push(randomProduct);
-        }
-    });
-
-    // Thêm 1 sản phẩm từ cùng danh mục với sản phẩm hiện tại
-    const sameCategory = allProducts
-        .filter(p => p.category === product.category && p.id !== product.id)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 4);
-    
-    if (sameCategory.length > 0) {
-        randomProducts.unshift(sameCategory[0]);
-    }
-
-    setTimeout(() => {
-        relatedContainer.innerHTML = randomProducts.map(product => `
-            <div class="product-card">
+    relatedProductsContainer.innerHTML = relatedProducts.map(relatedProduct => {
+        const isOutOfStock = relatedProduct.quantity <= 0;
+        
+        return `
+            <div class="product-card" data-id="${relatedProduct.id}">
                 <div class="product-card__image">
-                    <img src="${product.image}" alt="${product.name}">
+                    <img src="${relatedProduct.image}" alt="${relatedProduct.name}">
                 </div>
                 <div class="product-card__content">
-                    <h3 class="product-card__title">${product.name}</h3>
-                    <div class="product-card__price">${formatPrice(product.price)}</div>
-                    <button class="btn btn--primary" onclick="addToCart('${product.id}')">
-                        Thêm vào giỏ hàng
-                    </button>
+                    <h3 class="product-card__title">${relatedProduct.name}</h3>
+                    <div class="product-card__price">${formatPrice(relatedProduct.price)}</div>
+                    <div class="product-card__actions">
+                        <button class="btn btn--primary add-to-cart-btn ${isOutOfStock ? 'btn--disabled' : ''}" 
+                                onclick="addToCart('${relatedProduct.id}')"
+                                ${isOutOfStock ? 'disabled' : ''}>
+                            ${isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+                        </button>
+                        <a href="product-detail.html?id=${relatedProduct.id}" class="btn btn--secondary">
+                            Chi tiết
+                        </a>
+                    </div>
                 </div>
             </div>
-        `).join('');
-        
-        hideLoading();
-    }, 500);
+        `;
+    }).join('');
 }
 
 function setupQuantityButtons() {

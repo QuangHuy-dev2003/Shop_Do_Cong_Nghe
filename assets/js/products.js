@@ -10,6 +10,7 @@ const products = {
             description:
                 "Apple M2, RAM 8GB, SSD 256GB, 15.3 inch IPS Retina, MacOS",
             brand: "Apple",
+            quantity: 10,
             featured: true,
         },
         {
@@ -21,6 +22,7 @@ const products = {
             description:
                 "i5 12500H, RAM 8GB, SSD 512GB, RTX 2050 4GB, 15.6 inch FHD 144Hz",
             brand: "Acer",
+            quantity: 10,
             featured: true,
         },
         {
@@ -32,6 +34,7 @@ const products = {
             description:
                 "Ryzen 7 6800H, RAM 8GB, SSD 512GB, RTX 3050 4GB, 15.6 inch FHD 144Hz",
             brand: "Asus",
+            quantity: 10,
             featured: true,
         },
         {
@@ -55,6 +58,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/7077/314696/apple-watch-s9-lte-41mm-vien-thep-khong-gi-day-thep-vang-thumb-1-600x600.png",
             category: "smartwatch",
             description: "41mm, Viền nhôm, Dây cao su, Chip S9 SiP",
+            quantity: 10,
             brand: "Apple",
             featured: true,
         },
@@ -65,6 +69,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/7077/310858/samsung-galaxy-watch6-classic-47-mm-bac-ksp-600x600.jpg",
             category: "smartwatch",
             description: "47mm, Viền thép không gỉ, Dây silicone",
+            quantity: 10,
             brand: "Samsung",
             featured: true,
         },
@@ -75,6 +80,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/7077/321817/xiaomi-watch-s-3-bac-tn-600x600.jpg",
             category: "smartwatch",
             description: "46mm, Viền thép không gỉ, Dây da cao cấp",
+            quantity: 10,
             brand: "Xiaomi",
             featured: false,
         },
@@ -85,6 +91,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/7077/283209/garmin-forerunner-955-day-silicone-den-tn-600x600.jpg",
             category: "smartwatch",
             description: "46.5mm, Viền nhựa composite, Dây silicone",
+            quantity: 10,
             brand: "Garmin",
             featured: false,
         },
@@ -98,6 +105,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/54/315014/tai-nghe-bluetooth-airpods-pro-2nd-gen-usb-c-charge-apple-thumb-1-600x600.jpg",
             category: "headphone",
             description: "Chống ồn chủ động, Spatial Audio, Chip H2",
+            quantity: 10,
             brand: "Apple",
             featured: true,
         },
@@ -108,6 +116,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/54/328098/tai-nghe-bluetooth-chup-tai-sony-wh1000xm4-300724-033610-600x600.jpg",
             category: "headphone",
             description: "Chống ồn chủ động, LDAC, 30 giờ pin",
+            quantity: 0,
             brand: "Sony",
             featured: true,
         },
@@ -118,6 +127,7 @@ const products = {
             image: "https://cdn.tgdd.vn/Products/Images/54/327553/tai-nghe-bluetooth-true-wireless-samsung-galaxy-buds-3-r530n-120724-112318-600x600.jpg",
             category: "headphone",
             description: "24bit Hi-Fi, Chống ồn chủ động, 360 Audio",
+            quantity: 10,
             brand: "Samsung",
             featured: false,
         },
@@ -128,6 +138,7 @@ const products = {
             image: "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/54/332454/tai-nghe-tws-jbl-tour-pro-3-071224-084607-307-600x600.jpg",
             category: "headphone",
             description: "Chống ồn thích ứng, JBL Pro Sound, 50 giờ pin",
+            quantity: 10,
             brand: "JBL",
             featured: false,
         },
@@ -148,6 +159,7 @@ const products = {
             image: "https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/54/332454/tai-nghe-tws-jbl-tour-pro-3-071224-084607-307-600x600.jpg",
             category: "headphone",
             description: "Chống ồn thích ứng, JBL Pro Sound, 50 giờ pin",
+            quantity: 10,
             brand: "JBL",
             featured: false,
         },
@@ -206,12 +218,14 @@ function getFeaturedProducts() {
 function getProductById(productId) {
     const allProducts = getProducts();
     let foundProduct = null;
+
     Object.values(allProducts).forEach((category) => {
         const product = category.find((p) => p.id === productId);
         if (product) {
             foundProduct = product;
         }
     });
+
     return foundProduct;
 }
 
