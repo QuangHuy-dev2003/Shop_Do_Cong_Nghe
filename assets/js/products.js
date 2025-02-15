@@ -445,10 +445,15 @@ function setupFilters() {
         });
 
     // Sắp xếp
-    document.querySelector(".products-sort").addEventListener("change", (e) => {
-        sortOption = e.target.value;
-        renderProducts(filteredProducts); // Sử dụng danh sách đã lọc
-    });
+    const sortSelect = document.querySelector(".products-sort");
+    if (sortSelect) {
+        sortSelect.addEventListener("change", (e) => {
+            sortOption = e.target.value;
+            renderProducts(filteredProducts); // Sử dụng danh sách đã lọc
+        });
+    } else {
+        console.warn("Element with class 'products-sort' not found");
+    }
 }
 
 function filterProducts() {
@@ -605,6 +610,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Thiết lập các bộ lọc
     setupFilters();
+
+    
     
     // Hiển thị loading spinner
     const loaderOverlay = document.querySelector('.loader-overlay');
