@@ -1,8 +1,8 @@
 // Khởi tạo giỏ hàng từ localStorage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-const ITEMS_PER_PAGE = 5;
-let currentPage = 1;
+const CART_ITEMS_PER_PAGE = 5;
+let cartCurrentPage = 1;
 
 // Thêm sản phẩm vào giỏ hàng
 function addToCart(productId, quantity = 1) {
@@ -155,7 +155,13 @@ function renderCart() {
                 </div>
             `;
         } else {
-            cartItems.innerHTML = cart.map(item => {
+            // Tính toán phân trang
+            const totalPages = Math.ceil(cart.length / CART_ITEMS_PER_PAGE);
+            const start = (cartCurrentPage - 1) * CART_ITEMS_PER_PAGE;
+            const end = start + CART_ITEMS_PER_PAGE;
+            const currentItems = cart.slice(start, end);
+
+            cartItems.innerHTML = currentItems.map(item => {
                 const product = getProductById(item.id);
                 const isOutOfStock = product.quantity <= 0;
                 
@@ -173,7 +179,7 @@ function renderCart() {
                                     '<span class="out-of-stock">Hết hàng</span>' :
                                     `<button class="quantity-btn minus" onclick="updateQuantity('${item.id}', -1)">-</button>
                                     <input type="number" value="${item.quantity}" min="1" max="${product.quantity}" 
-                                           class="quantity-input" onchange="updateQuantity('${item.id}', this.value - ${item.quantity})">
+                                           class="quantity-input" onchange="handleQuantityInput(this, '${item.id}')">
                                     <button class="quantity-btn plus" onclick="updateQuantity('${item.id}', 1)">+</button>`
                                 }
                             </div>
@@ -184,28 +190,90 @@ function renderCart() {
                     </div>
                 `;
             }).join('');
+
+            // Thêm phân trang nếu cần
+            if (totalPages > 1) {
+                cartItems.insertAdjacentHTML('beforeend', `
+                    <div class="pagination">
+                        ${Array.from({length: totalPages}, (_, i) => i + 1).map(page => `
+                            <button class="pagination-btn ${page === cartCurrentPage ? 'active' : ''}"
+                                    onclick="changeCartPage(${page})">
+                                ${page}
+                            </button>
+                        `).join('')}
+                    </div>
+                `);
+            }
         }
+        
+        updateSelectedTotal();
         hideLoading();
     }, 500);
 }
 
-// Hàm cập nhật số lượng sản phẩm trong giỏ hàng
+// Cập nhật hàm updateQuantity
 function updateQuantity(productId, change) {
-    const cart = getCart();
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    const cartKey = `cart_${user.id}`;
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     const product = getProductById(productId);
+    
+    if (!product) return;
+    
+    const cartItem = cart.find(item => item.id === productId);
+    if (cartItem) {
+        const newQuantity = cartItem.quantity + parseInt(change);
+        
+        if (newQuantity >= 1 && newQuantity <= product.quantity) {
+            cartItem.quantity = newQuantity;
+            localStorage.setItem(cartKey, JSON.stringify(cart));
+            
+            // Cập nhật UI ngay lập tức
+            const quantityInput = document.querySelector(`[data-id="${productId}"] .quantity-input`);
+            if (quantityInput) {
+                quantityInput.value = newQuantity;
+            }
+            
+            // Cập nhật tổng tiền
+            updateSelectedTotal();
+            showToast('Đã cập nhật số lượng', 'success');
+        } else if (newQuantity > product.quantity) {
+            showToast('Số lượng vượt quá tồn kho', 'error');
+        } else if (newQuantity < 1) {
+            showToast('Số lượng tối thiểu là 1', 'error');
+        }
+    }
+}
+
+// Thêm xử lý cho input số lượng
+function handleQuantityInput(input, productId) {
+    const newQuantity = parseInt(input.value);
+    const product = getProductById(productId);
+    
+    if (isNaN(newQuantity) || newQuantity < 1) {
+        input.value = 1;
+        return;
+    }
+    
+    if (newQuantity > product.quantity) {
+        input.value = product.quantity;
+        showToast('Số lượng vượt quá tồn kho', 'error');
+        return;
+    }
+    
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    const cartKey = `cart_${user.id}`;
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     const cartItem = cart.find(item => item.id === productId);
     
     if (cartItem) {
-        const newQuantity = cartItem.quantity + change;
-        // Kiểm tra số lượng mới không vượt quá tồn kho và không nhỏ hơn 1
-        if (newQuantity >= 1 && newQuantity <= product.quantity) {
-            cartItem.quantity = newQuantity;
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            showToast('Đã cập nhật số lượng sản phẩm', 'success');
-        } else if (newQuantity > product.quantity) {
-            showToast('Số lượng sản phẩm trong kho không đủ', 'error');
-        }
+        cartItem.quantity = newQuantity;
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        updateSelectedTotal();
     }
 }
 
@@ -333,7 +401,7 @@ function updateSelectedTotal() {
         total += price * quantity;
     });
 
-    // Enable/disable nút thanh toán dựa trên số lượng sản phẩm đã chọn
+    // Enable/disable nút thanh toán
     if (checkoutBtn) {
         checkoutBtn.disabled = checkboxes.length === 0;
     }
@@ -344,12 +412,12 @@ function updateSelectedTotal() {
     
     if (subtotalElement && totalElement) {
         subtotalElement.textContent = formatPrice(total);
-        totalElement.textContent = formatPrice(total + 30000);
+        totalElement.textContent = formatPrice(total + 30000); // Phí vận chuyển
     }
 }
 
-function changePage(page) {
-    currentPage = page;
+function changeCartPage(page) {
+    cartCurrentPage = page;
     renderCart();
 }
 
@@ -361,3 +429,4 @@ function getCart() {
     const cartKey = `cart_${user.id}`;
     return JSON.parse(localStorage.getItem(cartKey)) || [];
 }
+

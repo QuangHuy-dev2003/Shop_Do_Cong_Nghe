@@ -10,6 +10,10 @@
         <link rel="stylesheet" href="assets/css/header.css" />
         <link rel="stylesheet" href="assets/css/footer.css" />
         <link rel="stylesheet" href="assets/css/products.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
     </head>
     <body>
         <div id="header"></div>
@@ -20,20 +24,20 @@
                     <!-- Filter Section -->
                     <aside class="products-filter">
                         <h3 class="filter-title">Bộ lọc sản phẩm</h3>
-                        
+
                         <div class="filter-group">
                             <h4>Danh mục</h4>
                             <div class="filter-options">
                                 <label class="filter-option">
-                                    <input type="checkbox" value="laptop">
+                                    <input type="checkbox" value="laptop" />
                                     Laptop
                                 </label>
                                 <label class="filter-option">
-                                    <input type="checkbox" value="smartwatch">
+                                    <input type="checkbox" value="smartwatch" />
                                     Đồng hồ thông minh
                                 </label>
                                 <label class="filter-option">
-                                    <input type="checkbox" value="headphone">
+                                    <input type="checkbox" value="headphone" />
                                     Tai nghe
                                 </label>
                             </div>
@@ -43,19 +47,35 @@
                             <h4>Giá</h4>
                             <div class="filter-options">
                                 <label class="filter-option">
-                                    <input type="radio" name="price" value="0-5000000">
+                                    <input
+                                        type="radio"
+                                        name="price"
+                                        value="0-5000000"
+                                    />
                                     Dưới 5 triệu
                                 </label>
                                 <label class="filter-option">
-                                    <input type="radio" name="price" value="5000000-10000000">
+                                    <input
+                                        type="radio"
+                                        name="price"
+                                        value="5000000-10000000"
+                                    />
                                     5 - 10 triệu
                                 </label>
                                 <label class="filter-option">
-                                    <input type="radio" name="price" value="10000000-20000000">
+                                    <input
+                                        type="radio"
+                                        name="price"
+                                        value="10000000-20000000"
+                                    />
                                     10 - 20 triệu
                                 </label>
                                 <label class="filter-option">
-                                    <input type="radio" name="price" value="20000000+">
+                                    <input
+                                        type="radio"
+                                        name="price"
+                                        value="20000000+"
+                                    />
                                     Trên 20 triệu
                                 </label>
                             </div>
@@ -65,16 +85,34 @@
                     <!-- Products Grid -->
                     <div class="products-content">
                         <div class="products-header">
-                            <h2 class="products-title">Tất cả sản phẩm</h2>
-                            <select class="products-sort">
-                                <option value="newest">Mới nhất</option>
-                                <option value="price-asc">Giá tăng dần</option>
-                                <option value="price-desc">Giá giảm dần</option>
-                            </select>
+                            <div class="products-header__left">
+                                <h2 class="products-title">Tất cả sản phẩm</h2>
+                                <select class="products-sort">
+                                    <option value="newest">Mới nhất</option>
+                                    <option value="price-asc">
+                                        Giá tăng dần
+                                    </option>
+                                    <option value="price-desc">
+                                        Giá giảm dần
+                                    </option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="products-grid" id="productsGrid">
-                            <!-- Products will be inserted here by JavaScript -->
+                        <!-- Thêm loading spinner -->
+                        <div class="loader-overlay">
+                            <div class="loader"></div>
+                        </div>
+
+                        <!-- Wrapper cho grid và pagination -->
+                        <div class="products-wrapper">
+                            <div id="productsGrid" class="products-grid">
+                                <!-- Products will be inserted here by JavaScript -->
+                            </div>
+
+                            <div id="productsPagination" class="pagination">
+                                <!-- Pagination will be inserted here by JavaScript -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,4 +127,4 @@
         <script src="assets/js/cart.js"></script>
         <script src="assets/js/load-header.js"></script>
     </body>
-</html> 
+</html>

@@ -294,30 +294,114 @@ function createProductCard(product) {
 
 // Khởi tạo dữ liệu khi trang web load
 document.addEventListener("DOMContentLoaded", () => {
-    let allProducts = getAllProducts();
-    renderProducts(allProducts);
-    // Chỉ chạy setupFilters nếu đang ở trang products.html
-    if (window.location.pathname.includes("products.html")) {
-        setupFilters();
+    const loaderOverlay = document.querySelector(".loader-overlay");
+    if (loaderOverlay) {
+        loaderOverlay.style.display = "flex";
+
+        setTimeout(() => {
+            let allProducts = getAllProducts();
+            renderProducts(allProducts);
+
+            if (window.location.pathname.includes("products.html")) {
+                setupFilters();
+            }
+
+            loaderOverlay.style.display = "none";
+        }, 1000);
     }
 });
 
+const PRODUCTS_PER_PAGE = 9;
+let currentPage = 1;
+
+function renderProducts(products) {
+    const productsGrid = document.getElementById("productsGrid");
+    const productsPagination = document.getElementById("productsPagination");
+    if (!productsGrid || !productsPagination) return;
+
+    const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    const end = start + PRODUCTS_PER_PAGE;
+    const currentProducts = products.slice(start, end);
+
+    // Render products
+    productsGrid.innerHTML = `
+        ${currentProducts
+            .map(
+                (product) => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-card__image">
+                    <img src="${product.image}" alt="${product.name}">
+                </div>
+                <div class="product-card__content">
+                    <h3 class="product-card__title">${product.name}</h3>
+                    <div class="product-card__price">${formatPrice(
+                        product.price
+                    )}</div>
+                    <div class="product-card__actions">
+                        <button class="btn btn--primary ${
+                            product.quantity <= 0 ? "btn--disabled" : ""
+                        }" 
+                                onclick="handleAddToCart('${product.id}')"
+                                ${product.quantity <= 0 ? "disabled" : ""}>
+                            ${
+                                product.quantity <= 0
+                                    ? "Hết hàng"
+                                    : "Thêm vào giỏ hàng"
+                            }
+                        </button>
+                        <a href="product-detail.html?id=${
+                            product.id
+                        }" class="btn btn--secondary">
+                            <i class="fas fa-info-circle"></i>
+                            Chi tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `
+            )
+            .join("")}
+    `;
+
+    // Render pagination
+    if (totalPages > 1) {
+        productsPagination.innerHTML = `
+            ${Array.from({ length: totalPages }, (_, i) => i + 1)
+                .map(
+                    (page) => `
+                <button class="pagination-btn ${
+                    page === currentPage ? "active" : ""
+                }"
+                        onclick="handlePageChange(${page})">
+                    ${page}
+                </button>
+            `
+                )
+                .join("")}
+        `;
+    } else {
+        productsPagination.innerHTML = "";
+    }
+}
+
+// Cập nhật bộ lọc chi tiết hơn
 function setupFilters() {
-    // Xử lý filter theo danh mục
+    // Lọc theo danh mục
     document
         .querySelectorAll('.filter-option input[type="checkbox"]')
         .forEach((checkbox) => {
             checkbox.addEventListener("change", filterProducts);
         });
 
-    // Xử lý filter theo giá
+    // Lọc theo giá
     document
         .querySelectorAll('.filter-option input[type="radio"]')
         .forEach((radio) => {
             radio.addEventListener("change", filterProducts);
         });
 
-    // Xử lý sort
+    // Sắp xếp
     document.querySelector(".products-sort").addEventListener("change", (e) => {
         const sortValue = e.target.value;
         let products = getAllProducts();
@@ -334,6 +418,7 @@ function setupFilters() {
                 break;
         }
 
+        currentPage = 1; // Reset về trang đầu khi lọc
         renderProducts(products);
     });
 }
@@ -345,17 +430,18 @@ function filterProducts() {
             '.filter-option input[type="checkbox"]:checked'
         ),
     ].map((cb) => cb.value);
-
     const selectedPrice = document.querySelector(
         '.filter-option input[type="radio"]:checked'
     )?.value;
 
+    // Lọc theo danh mục
     if (selectedCategories.length) {
         products = products.filter((p) =>
             selectedCategories.includes(p.category)
         );
     }
 
+    // Lọc theo giá
     if (selectedPrice) {
         const [min, max] = selectedPrice.split("-").map(Number);
         products = products.filter((p) => {
@@ -366,39 +452,70 @@ function filterProducts() {
         });
     }
 
+    currentPage = 1; // Reset về trang đầu khi lọc
     renderProducts(products);
 }
 
-function renderProducts(products) {
-    const productsGrid = document.getElementById("productsGrid");
-    if (!productsGrid) return;
+function handlePageChange(page) {
+    currentPage = page;
+    const products = getAllProducts();
+    renderProducts(products);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
-    showLoading(); // Hiển thị loader
+// Thêm hàm xử lý thêm vào giỏ hàng
+function handleAddToCart(productId) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        showToast("Vui lòng đăng nhập để thêm vào giỏ hàng", "error");
+        return;
+    }
 
-    setTimeout(() => {
-        productsGrid.innerHTML = products
-            .map(
-                (product) => `
-            <div class="product-card" data-id="${product.id}">
-                <div class="product-card__image">
-                    <img src="${product.image}" alt="${product.name}">
-                </div>
-                <div class="product-card__content">
-                    <h3 class="product-card__title">${product.name}</h3>
-                    <div class="product-card__price">${formatPrice(
-                        product.price
-                    )}</div>
-                    <button class="btn btn--primary add-to-cart-btn" onclick="addToCart('${
-                        product.id
-                    }')">
-                        Thêm vào giỏ hàng
-                    </button>
-                </div>
-            </div>
-        `
-            )
-            .join("");
+    const product = getProductById(productId);
+    if (!product) return;
 
-        hideLoading(); // Ẩn loader
-    }, 500);
+    if (product.quantity <= 0) {
+        showToast("Sản phẩm tạm hết hàng", "error");
+        return;
+    }
+
+    const cartKey = `cart_${user.id}`;
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    const existingProduct = cart.find((item) => item.id === productId);
+    if (existingProduct) {
+        if (existingProduct.quantity + 1 > product.quantity) {
+            showToast("Số lượng sản phẩm trong kho không đủ", "error");
+            return;
+        }
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({
+            id: productId,
+            quantity: 1,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+        });
+    }
+
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    showToast("Đã thêm sản phẩm vào giỏ hàng", "success");
+    updateCartCount(); // Cập nhật số lượng trong giỏ hàng
+}
+
+// Thêm hàm updateCartCount
+function updateCartCount() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    const cartKey = `cart_${user.id}`;
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+    const cartCountElement = document.querySelector(".cart-count");
+    if (cartCountElement) {
+        cartCountElement.textContent = cartCount;
+        cartCountElement.style.display = cartCount > 0 ? "block" : "none";
+    }
 }

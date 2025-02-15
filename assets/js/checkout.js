@@ -240,41 +240,51 @@ function handleOrder(e) {
     }, 1000);
 }
 
-// Xử lý form đặt hàng
+// Thêm hàm getCart
+function getCart() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return [];
+
+    const cartKey = `cart_${user.id}`;
+    return JSON.parse(localStorage.getItem(cartKey)) || [];
+}
+
+// Sửa lại phần xử lý form đặt hàng
 document
     .getElementById("checkoutForm")
     .addEventListener("submit", function (e) {
         e.preventDefault();
 
         const cart = getCart();
-        const products = getProducts();
+        if (cart.length === 0) {
+            showToast("Giỏ hàng trống", "error");
+            return;
+        }
 
-        // Cập nhật số lượng sản phẩm trong kho
-        cart.forEach((cartItem) => {
-            const category = Object.keys(products).find((cat) =>
-                products[cat].some((p) => p.id === cartItem.id)
-            );
+        showLoading();
 
-            if (category) {
-                const productIndex = products[category].findIndex(
-                    (p) => p.id === cartItem.id
-                );
-                if (productIndex !== -1) {
-                    products[category][productIndex].quantity -=
-                        cartItem.quantity;
+        setTimeout(() => {
+            // Cập nhật số lượng sản phẩm trong kho
+            cart.forEach((cartItem) => {
+                const product = getProductById(cartItem.id);
+                if (product) {
+                    product.quantity -= cartItem.quantity;
                 }
-            }
-        });
+            });
 
-        // Lưu lại số lượng mới vào localStorage
-        localStorage.setItem("products", JSON.stringify(products));
+            // Lưu lại số lượng mới
+            localStorage.setItem("products", JSON.stringify(products));
 
-        // Tạo mã đơn hàng
-        const orderId = "ORD" + Date.now();
+            // Tạo mã đơn hàng
+            const orderId = "ORD" + Date.now();
 
-        // Xóa giỏ hàng
-        localStorage.removeItem("cart");
+            // Xóa giỏ hàng
+            const user = JSON.parse(localStorage.getItem("user"));
+            localStorage.removeItem(`cart_${user.id}`);
 
-        // Chuyển hướng đến trang thank-you
-        window.location.href = `thank-you.html?orderId=${orderId}`;
+            hideLoading();
+
+            // Chuyển hướng đến trang thank-you
+            window.location.href = `thank-you.html?orderId=${orderId}`;
+        }, 1000);
     });

@@ -321,24 +321,30 @@ function hideLoading() {
     }
 }
 
-// Hiển thị toast thông báo
-function showToast(message, type = "success") {
-    const toast = document.createElement("div");
+// Thêm container cho toast nếu chưa có
+function initToastContainer() {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.className = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+    return toastContainer;
+}
+
+function showToast(message, type = 'success') {
+    const toastContainer = initToastContainer();
+    const toast = document.createElement('div');
     toast.className = `toast toast--${type}`;
     toast.textContent = message;
-
-    const container = document.getElementById("toastContainer");
-    container.appendChild(toast);
-
+    
+    toastContainer.appendChild(toast);
+    
     setTimeout(() => {
-        toast.classList.add("toast--fade-in");
-    }, 100);
-
-    setTimeout(() => {
-        toast.classList.remove("toast--fade-in");
-        toast.classList.add("toast--fade-out");
+        toast.classList.add('toast--fade-out');
         setTimeout(() => {
-            container.removeChild(toast);
+            toastContainer.removeChild(toast);
         }, 300);
     }, 3000);
 }
