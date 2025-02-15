@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // Hiển thị loader ngay khi trang bắt đầu load
+    showLoading();
+
     const orderList = document.getElementById("orderList");
     const noOrders = document.getElementById("noOrders");
     const pagination = document.getElementById("pagination");
@@ -17,14 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load orders
     function loadOrders() {
-        showLoading();
         const ordersKey = `orders_${user.id}`;
         allOrders = JSON.parse(localStorage.getItem(ordersKey)) || [];
 
         // Sắp xếp theo ID giảm dần
         allOrders.sort((a, b) => {
-            const timeA = parseInt(a.id.split("_")[2]);
-            const timeB = parseInt(b.id.split("_")[2]);
+            const timeA = parseInt(a.id.replace(/\D/g, ""));
+            const timeB = parseInt(b.id.replace(/\D/g, ""));
             return timeB - timeA;
         });
 
@@ -39,6 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
             displayOrders(currentPage);
             setupPagination();
         }
+
+        // Ẩn loader sau khi hoàn thành
         hideLoading();
     }
 
@@ -295,6 +299,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Initial load
-    loadOrders();
+    // Load dữ liệu ban đầu
+    setTimeout(() => {
+        loadOrders();
+    }, 1000);
 });

@@ -160,6 +160,36 @@ function renderOrderSummary(items, total) {
 // Xóa các event listener không cần thiết
 window.onbeforeunload = null;
 
+// Thêm hàm tạo mã đơn hàng ngẫu nhiên
+function generateOrderId() {
+    const prefix = "DH";
+    let randomNum;
+    const existingOrders = getAllOrders(); // Lấy tất cả đơn hàng hiện có
+
+    do {
+        // Tạo số ngẫu nhiên 6 chữ số
+        randomNum = Math.floor(100000 + Math.random() * 900000);
+    } while (
+        existingOrders.some((order) => order.id === `${prefix}${randomNum}`)
+    );
+
+    return `${prefix}${randomNum}`;
+}
+
+// Thêm hàm lấy tất cả đơn hàng
+function getAllOrders() {
+    const allOrders = [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    users.forEach((user) => {
+        const userOrders =
+            JSON.parse(localStorage.getItem(`orders_${user.id}`)) || [];
+        allOrders.push(...userOrders);
+    });
+
+    return allOrders;
+}
+
 function handleOrder(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -198,7 +228,7 @@ function handleOrder(e) {
 
     showLoading();
     setTimeout(() => {
-        const orderId = `DH${user.id}_${Date.now()}`;
+        const orderId = generateOrderId(); // Sử dụng hàm mới
 
         const newOrder = {
             id: orderId,
@@ -269,8 +299,4 @@ function saveOrder(orderData) {
 
     // Lưu lại vào localStorage
     localStorage.setItem(`orders_${user.email}`, JSON.stringify(orders));
-}
-
-function generateOrderId() {
-    return "ORD" + Date.now().toString().slice(-6);
 }

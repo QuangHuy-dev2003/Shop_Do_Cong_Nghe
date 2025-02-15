@@ -141,6 +141,10 @@ function loadSelectedItems() {
     const saved = localStorage.getItem(`selectedItems_${user.id}`);
     if (saved) {
         selectedItems = new Set(JSON.parse(saved));
+        // Cập nhật tổng tiền ngay sau khi load selected items
+        setTimeout(() => {
+            updateSelectedTotal();
+        }, 0);
     }
 }
 
@@ -262,10 +266,15 @@ function renderCart() {
                     } else {
                         selectedItems.delete(itemId);
                     }
-                    saveSelectedItems(); // Lưu trạng thái mới
+                    saveSelectedItems();
                     updateSelectedTotal();
                 });
             });
+
+            // Cập nhật tổng tiền ngay sau khi render nếu có sản phẩm đã chọn
+            if (selectedItems.size > 0) {
+                updateSelectedTotal();
+            }
         }
         hideLoading();
     }, 500);
@@ -353,7 +362,18 @@ function updateAddToCartButton(product) {
     });
 }
 
-// Xử lý đặt hàng
+// Thêm hàm calculateTotal
+function calculateTotal(items) {
+    let subtotal = items.reduce((total, item) => {
+        return total + item.price * item.quantity;
+    }, 0);
+
+    // Thêm phí vận chuyển (30,000đ)
+    const shippingFee = 30000;
+    return subtotal + shippingFee;
+}
+
+// Sửa lại hàm handleCheckout
 function handleCheckout() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
@@ -372,9 +392,16 @@ function handleCheckout() {
         return;
     }
 
+    // Tính tổng tiền sản phẩm
+    const subtotal = selectedProducts.reduce((total, item) => {
+        return total + item.price * item.quantity;
+    }, 0);
+
     const orderData = {
         items: selectedProducts,
-        total: calculateTotal(selectedProducts),
+        subtotal: subtotal,
+        shippingFee: 30000,
+        total: subtotal + 30000, // Tổng tiền bao gồm phí vận chuyển
     };
 
     localStorage.setItem(`order_${user.id}`, JSON.stringify(orderData));
@@ -391,7 +418,7 @@ document.addEventListener("DOMContentLoaded", updateCartCount);
 document.addEventListener("DOMContentLoaded", () => {
     showLoading();
     setTimeout(() => {
-        loadSelectedItems(); // Load trạng thái checkbox khi trang được load
+        loadSelectedItems(); // Load trạng thái checkbox và tính tổng tiền
         renderCart();
         hideLoading();
 
@@ -434,32 +461,43 @@ document.addEventListener("change", function (e) {
     }
 });
 
+// Sửa lại hàm updateSelectedTotal
 function updateSelectedTotal() {
     const checkboxes = document.querySelectorAll(".item-checkbox:checked");
     const checkoutBtn = document.querySelector(".checkout-btn");
-    let total = 0;
+    let subtotal = 0;
 
-    checkboxes.forEach((checkbox) => {
-        const cartItem = checkbox.closest(".cart-item");
-        const price = parseFloat(cartItem.dataset.price);
-        const quantity = parseInt(
-            cartItem.querySelector(".quantity-input").value
-        );
-        total += price * quantity;
-    });
+    // Nếu không có checkbox được chọn nhưng có selectedItems
+    if (checkboxes.length === 0 && selectedItems.size > 0) {
+        const cart = getCart();
+        subtotal = cart
+            .filter((item) => selectedItems.has(item.id))
+            .reduce((total, item) => total + item.price * item.quantity, 0);
+    } else {
+        checkboxes.forEach((checkbox) => {
+            const cartItem = checkbox.closest(".cart-item");
+            const price = parseFloat(cartItem.dataset.price);
+            const quantity = parseInt(
+                cartItem.querySelector(".quantity-input").value
+            );
+            subtotal += price * quantity;
+        });
+    }
 
     // Enable/disable nút thanh toán
     if (checkoutBtn) {
-        checkoutBtn.disabled = checkboxes.length === 0;
+        checkoutBtn.disabled =
+            checkboxes.length === 0 && selectedItems.size === 0;
     }
 
     // Cập nhật hiển thị tổng tiền
     const subtotalElement = document.getElementById("cartSubtotal");
     const totalElement = document.getElementById("cartTotal");
+    const shippingFee = 30000;
 
     if (subtotalElement && totalElement) {
-        subtotalElement.textContent = formatPrice(total);
-        totalElement.textContent = formatPrice(total + 30000); // Phí vận chuyển
+        subtotalElement.textContent = formatPrice(subtotal);
+        totalElement.textContent = formatPrice(subtotal + shippingFee);
     }
 }
 
