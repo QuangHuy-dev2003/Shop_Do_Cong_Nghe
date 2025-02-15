@@ -1,3 +1,4 @@
+
 // Dữ liệu sản phẩm từ Thế Giới Di Động
 const products = {
     laptops: [
@@ -586,3 +587,87 @@ document.addEventListener("DOMContentLoaded", () => {
         renderProducts(getAllProducts());
     }
 });
+
+
+// Biến lưu trữ từ khóa tìm kiếm
+let searchTerm = '';
+
+// Hàm khởi tạo trang sản phẩm
+function initializeProductsPage() {
+    // Lấy từ khóa tìm kiếm từ localStorage
+    searchTerm = localStorage.getItem('searchTerm') || '';
+    
+    // Xóa từ khóa tìm kiếm khỏi localStorage sau khi đã lấy
+    localStorage.removeItem('searchTerm');
+
+    // Hiển thị loading
+    showLoading();
+
+    // Lấy tất cả sản phẩm
+    const allProducts = getAllProducts();
+
+    // Lọc sản phẩm dựa trên từ khóa tìm kiếm nếu có
+    const filteredProducts = searchTerm
+        ? allProducts.filter(product => 
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.description.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : allProducts;
+
+    // Hiển thị sản phẩm
+    displayProducts(filteredProducts);
+
+    // Cập nhật tiêu đề trang nếu đang tìm kiếm
+    updatePageTitle();
+
+    // Ẩn loading
+    hideLoading();
+}
+
+// Hàm hiển thị sản phẩm
+function displayProducts(products) {
+    const productContainer = document.querySelector('.product-container');
+    if (!productContainer) return;
+
+    productContainer.innerHTML = '';
+
+    if (products.length === 0) {
+        productContainer.innerHTML = '<p>Không tìm thấy sản phẩm phù hợp.</p>';
+        return;
+    }
+
+    products.forEach(product => {
+        const productCard = createProductCard(product);
+        productContainer.innerHTML += productCard;
+    });
+}
+
+// Hàm cập nhật tiêu đề trang
+function updatePageTitle() {
+    const pageTitle = document.querySelector('.page-title');
+    if (pageTitle) {
+        pageTitle.textContent = searchTerm 
+            ? `Kết quả tìm kiếm cho "${searchTerm}"`
+            : 'Tất cả sản phẩm';
+    }
+}
+
+// Hàm hiển thị loading
+function showLoading() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'flex';
+    }
+}
+
+// Hàm ẩn loading
+function hideLoading() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'none';
+    }
+}
+
+// Gọi hàm khởi tạo khi trang load
+document.addEventListener('DOMContentLoaded', initializeProductsPage);
