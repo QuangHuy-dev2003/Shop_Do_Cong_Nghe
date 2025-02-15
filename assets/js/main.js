@@ -308,16 +308,16 @@ function initFeaturedSlider(totalSlides) {
 
 // Hiển thị/ẩn loading
 function showLoading() {
-    const loaderOverlay = document.querySelector(".loader-overlay");
-    if (loaderOverlay) {
-        loaderOverlay.style.display = "flex";
+    const loader = document.querySelector('.loader-overlay');
+    if (loader) {
+        loader.classList.add('active');
     }
 }
 
 function hideLoading() {
-    const loaderOverlay = document.querySelector(".loader-overlay");
-    if (loaderOverlay) {
-        loaderOverlay.style.display = "none";
+    const loader = document.querySelector('.loader-overlay');
+    if (loader) {
+        loader.classList.remove('active');
     }
 }
 

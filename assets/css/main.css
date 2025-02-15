@@ -82,10 +82,18 @@
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.9);
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 @keyframes rotate {
@@ -1013,4 +1021,20 @@
 
 .loading-spinner.active {
     display: flex;
+}
+
+/* Thêm vào phần cuối file */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

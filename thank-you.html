@@ -18,6 +18,10 @@
         <!-- Header -->
         <div id="header"></div>
 
+        <div class="loader-overlay">
+            <div class="loader"></div>
+        </div>
+
         <main class="main">
             <div class="container">
                 <div class="thank-you">
@@ -67,6 +71,17 @@
                 if (orderId) {
                     document.getElementById("orderId").textContent = orderId;
                 }
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    // Thêm animation fade-in cho nội dung
+                    document
+                        .querySelector(".thank-you")
+                        .classList.add("fade-in");
+                }, 1000);
             });
         </script>
 

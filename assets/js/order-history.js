@@ -21,6 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const ordersKey = `orders_${user.id}`;
         allOrders = JSON.parse(localStorage.getItem(ordersKey)) || [];
 
+        // Sắp xếp theo ID giảm dần
+        allOrders.sort((a, b) => {
+            const timeA = parseInt(a.id.split("_")[2]);
+            const timeB = parseInt(b.id.split("_")[2]);
+            return timeB - timeA;
+        });
+
         if (!allOrders || allOrders.length === 0) {
             orderList.style.display = "none";
             pagination.style.display = "none";
@@ -198,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentPage = i;
                 displayOrders(currentPage);
                 setupPagination();
+                scrollToTop();
             });
             pageNumbers.appendChild(button);
         }
@@ -210,6 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentPage--;
                 displayOrders(currentPage);
                 setupPagination();
+                scrollToTop();
             }
         });
 
@@ -218,6 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentPage++;
                 displayOrders(currentPage);
                 setupPagination();
+                scrollToTop();
             }
         });
 
@@ -275,6 +285,14 @@ document.addEventListener("DOMContentLoaded", () => {
             cancelled: "Đã hủy",
         };
         return statusMap[status] || status;
+    }
+
+    // Thêm hàm scrollToTop
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     }
 
     // Initial load
