@@ -143,3 +143,10 @@ if (document.readyState === "loading") {
     initializeHeader();
     setActiveMenu();
 }
+
+function logout() {
+    // Xóa thông tin người dùng khỏi localStorage
+    localStorage.removeItem("user");
+    // Chuyển hướng người dùng về trang đăng nhập
+    window.location.href = "/login.html";
+}
