@@ -1,4 +1,3 @@
-
 // Dữ liệu sản phẩm từ Thế Giới Di Động
 const products = {
     laptops: [
@@ -167,6 +166,10 @@ const products = {
     ],
 };
 
+// Biến để lưu trữ trạng thái lọc hiện tại
+let filteredProducts = [];
+let sortOption = "newest";
+
 // Lưu và cập nhật dữ liệu vào localStorage khi trang web load
 function initializeProducts() {
     // Luôn cập nhật lại dữ liệu mới nhất
@@ -232,16 +235,17 @@ function getProductById(productId) {
 
 // Thêm hàm getAllProducts
 function getAllProducts() {
-    const allProducts = [];
+    const allProducts = getProducts();
+    const result = [];
     const categories = ["laptops", "smartwatches", "headphones"];
 
     categories.forEach((category) => {
-        if (products[category]) {
-            allProducts.push(...products[category]);
+        if (allProducts[category]) {
+            result.push(...allProducts[category]);
         }
     });
 
-    return allProducts;
+    return result;
 }
 
 // Sửa lại hàm getRelatedProducts
@@ -296,14 +300,26 @@ const PRODUCTS_PER_PAGE = 9;
 let currentPage = 1;
 
 function renderProducts(products) {
+    // Lưu danh sách sản phẩm đã lọc
+    filteredProducts = [...products];
+    
     const productsGrid = document.getElementById("productsGrid");
     const productsPagination = document.getElementById("productsPagination");
     if (!productsGrid || !productsPagination) return;
 
-    const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+    // Áp dụng sắp xếp
+    sortProducts();
+    
+    const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
     const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
     const end = start + PRODUCTS_PER_PAGE;
-    const currentProducts = products.slice(start, end);
+    const currentProducts = filteredProducts.slice(start, end);
+
+    // Ẩn loading spinner
+    const loaderOverlay = document.querySelector('.loader-overlay');
+    if (loaderOverlay) {
+        loaderOverlay.style.display = 'none';
+    }
 
     // Render products
     productsGrid.innerHTML = `
@@ -321,12 +337,12 @@ function renderProducts(products) {
                     )}</div>
                     <div class="product-card__actions">
                         <button class="btn btn--primary ${
-                            product.quantity <= 0 ? "btn--disabled" : ""
+                            !product.quantity || product.quantity <= 0 ? "btn--disabled" : ""
                         }" 
                                 onclick="handleAddToCart('${product.id}')"
-                                ${product.quantity <= 0 ? "disabled" : ""}>
+                                ${!product.quantity || product.quantity <= 0 ? "disabled" : ""}>
                             ${
-                                product.quantity <= 0
+                                !product.quantity || product.quantity <= 0
                                     ? "Hết hàng"
                                     : "Thêm vào giỏ hàng"
                             }
@@ -344,6 +360,16 @@ function renderProducts(products) {
             )
             .join("")}
     `;
+
+    // Hiển thị thông báo khi không có sản phẩm
+    if (currentProducts.length === 0) {
+        productsGrid.innerHTML = `
+            <div class="no-products-message">
+                <p>Không tìm thấy sản phẩm phù hợp với bộ lọc đã chọn.</p>
+                <button class="btn btn--primary" onclick="resetFilters()">Xóa bộ lọc</button>
+            </div>
+        `;
+    }
 
     // Render pagination
     if (totalPages > 1) {
@@ -366,6 +392,42 @@ function renderProducts(products) {
     }
 }
 
+// Hàm để sắp xếp sản phẩm dựa trên tuỳ chọn hiện tại
+function sortProducts() {
+    switch (sortOption) {
+        case "price-asc":
+            filteredProducts.sort((a, b) => a.price - b.price);
+            break;
+        case "price-desc":
+            filteredProducts.sort((a, b) => b.price - a.price);
+            break;
+        case "newest":
+            // Mặc định là mới nhất, không cần sắp xếp thêm
+            break;
+    }
+}
+
+// Hàm reset bộ lọc
+function resetFilters() {
+    // Reset checkbox
+    document.querySelectorAll('.filter-option input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+    });
+    
+    // Reset radio buttons
+    document.querySelectorAll('.filter-option input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+    });
+    
+    // Reset dropdown sắp xếp
+    document.querySelector(".products-sort").value = "newest";
+    sortOption = "newest";
+    
+    // Hiển thị lại tất cả sản phẩm
+    currentPage = 1;
+    renderProducts(getAllProducts());
+}
+
 // Cập nhật bộ lọc chi tiết hơn
 function setupFilters() {
     // Lọc theo danh mục
@@ -384,23 +446,8 @@ function setupFilters() {
 
     // Sắp xếp
     document.querySelector(".products-sort").addEventListener("change", (e) => {
-        const sortValue = e.target.value;
-        let products = getAllProducts();
-
-        switch (sortValue) {
-            case "price-asc":
-                products.sort((a, b) => a.price - b.price);
-                break;
-            case "price-desc":
-                products.sort((a, b) => b.price - a.price);
-                break;
-            case "newest":
-                products.sort((a, b) => new Date(b.date) - new Date(a.date));
-                break;
-        }
-
-        currentPage = 1; // Reset về trang đầu khi lọc
-        renderProducts(products);
+        sortOption = e.target.value;
+        renderProducts(filteredProducts); // Sử dụng danh sách đã lọc
     });
 }
 
@@ -424,13 +471,17 @@ function filterProducts() {
 
     // Lọc theo giá
     if (selectedPrice) {
-        const [min, max] = selectedPrice.split("-").map(Number);
-        products = products.filter((p) => {
-            if (max) {
-                return p.price >= min && p.price <= max;
-            }
-            return p.price >= min;
-        });
+        if (selectedPrice === "20000000+") {
+            products = products.filter((p) => p.price >= 20000000);
+        } else {
+            const [min, max] = selectedPrice.split("-").map(Number);
+            products = products.filter((p) => {
+                if (max) {
+                    return p.price >= min && p.price <= max;
+                }
+                return p.price >= min;
+            });
+        }
     }
 
     currentPage = 1; // Reset về trang đầu khi lọc
@@ -439,8 +490,7 @@ function filterProducts() {
 
 function handlePageChange(page) {
     currentPage = page;
-    const products = getAllProducts();
-    renderProducts(products);
+    renderProducts(filteredProducts); // Sử dụng danh sách đã lọc
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -455,7 +505,7 @@ function handleAddToCart(productId) {
     const product = getProductById(productId);
     if (!product) return;
 
-    if (product.quantity <= 0) {
+    if (!product.quantity || product.quantity <= 0) {
         showToast("Sản phẩm tạm hết hàng", "error");
         return;
     }
@@ -538,7 +588,30 @@ function searchProducts(searchTerm) {
     });
 }
 
+// Hàm hiển thị thông báo - giả định rằng đã có
+function showToast(message, type) {
+    // Kiểm tra xem đã có hàm toàn cục hay chưa
+    if (typeof window.showToast === 'function') {
+        window.showToast(message, type);
+    } else {
+        // Nếu chưa có, tạo thông báo đơn giản
+        alert(message);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Khởi tạo sản phẩm trong localStorage
+    initializeProducts();
+    
+    // Thiết lập các bộ lọc
+    setupFilters();
+    
+    // Hiển thị loading spinner
+    const loaderOverlay = document.querySelector('.loader-overlay');
+    if (loaderOverlay) {
+        loaderOverlay.style.display = 'flex';
+    }
+    
     // Kiểm tra xem có từ khóa tìm kiếm không
     const searchTerm = localStorage.getItem("searchTerm");
 
@@ -566,4 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Hiển thị tất cả sản phẩm nếu không có tìm kiếm
         renderProducts(getAllProducts());
     }
+    
+    // Cập nhật số lượng giỏ hàng
+    updateCartCount();
 });
