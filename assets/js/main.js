@@ -341,11 +341,13 @@ function showToast(message, type = 'success') {
     
     toastContainer.appendChild(toast);
     
+    // Đợi animation kết thúc rồi mới xóa
     setTimeout(() => {
-        toast.classList.add('toast--fade-out');
-        setTimeout(() => {
-            toastContainer.removeChild(toast);
-        }, 300);
+        toast.addEventListener('animationend', (e) => {
+            if (e.animationName === 'fadeOut') {
+                toastContainer.removeChild(toast);
+            }
+        });
     }, 3000);
 }
 

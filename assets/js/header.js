@@ -111,9 +111,60 @@ function initializeHeader() {
                 dropdown.classList.remove("show");
             }
         });
+// Thêm chức năng tìm kiếm
+        const searchInput = document.querySelector('.header__search-input');
+        const searchBtn = document.querySelector('.header__search-btn');
+
+        console.log("Search input:", searchInput);
+        console.log("Search button:", searchBtn);
+
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            console.log("Search term:", searchTerm);
+            if (!searchTerm) {
+                showToast("Vui lòng nhập từ khóa tìm kiếm", "error");
+                return;
+            }
+
+            // Hiển thị loading
+            showLoading();
+
+            // Lưu từ khóa tìm kiếm vào localStorage
+            localStorage.setItem('searchTerm', searchTerm);
+            
+            // Chuyển hướng đến trang products sau 1 giây
+            setTimeout(() => {
+                window.location.href = '/products.html';
+            }, 1000);
+        }
+
+        // Xử lý sự kiện khi nhấn nút tìm kiếm
+        if (searchBtn) {
+            searchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log("Search button clicked");
+                performSearch();
+            });
+        }
+
+        // Xử lý sự kiện khi nhấn Enter trong ô tìm kiếm
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    console.log("Enter key pressed");
+                    performSearch();
+                }
+            });
+
+            // Thêm sự kiện focus để xóa nội dung tìm kiếm cũ
+            searchInput.addEventListener('focus', () => {
+                searchInput.value = '';
+            });
+        }
 
         updateUserMenu();
-        loadUserCart(); // Thêm dòng này
+        loadUserCart();
     } catch (error) {
         console.error("Error in initializeHeader:", error);
     }

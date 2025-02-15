@@ -519,3 +519,70 @@ function updateCartCount() {
         cartCountElement.style.display = cartCount > 0 ? "block" : "none";
     }
 }
+
+function searchProducts(searchTerm) {
+    if (!searchTerm) return getAllProducts();
+
+    searchTerm = searchTerm.toLowerCase();
+    return getAllProducts().filter((product) => {
+        // Tìm theo tên sản phẩm
+        const nameMatch = product.name.toLowerCase().includes(searchTerm);
+
+        // Tìm theo danh mục
+        const categoryMatch = product.category
+            .toLowerCase()
+            .includes(searchTerm);
+
+        // Tìm theo từ khóa
+        const keywords = [
+            "laptop",
+            "máy tính",
+            "notebook",
+            "đồng hồ",
+            "smartwatch",
+            "watch",
+            "tai nghe",
+            "headphone",
+            "earphone",
+        ];
+
+        const keywordMatch = keywords.some((keyword) => {
+            if (keyword.includes(searchTerm) || searchTerm.includes(keyword)) {
+                return product.category.toLowerCase().includes(keyword);
+            }
+            return false;
+        });
+
+        return nameMatch || categoryMatch || keywordMatch;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Kiểm tra xem có từ khóa tìm kiếm không
+    const searchTerm = localStorage.getItem("searchTerm");
+
+    if (searchTerm) {
+        // Xóa từ khóa sau khi đã sử dụng
+        localStorage.removeItem("searchTerm");
+
+        // Tìm kiếm sản phẩm
+        const searchResults = searchProducts(searchTerm);
+
+        if (searchResults.length > 0) {
+            renderProducts(searchResults);
+            showToast(
+                `Tìm thấy ${searchResults.length} sản phẩm cho "${searchTerm}"`,
+                "success"
+            );
+        } else {
+            renderProducts(getAllProducts());
+            showToast(
+                `Không tìm thấy sản phẩm nào cho "${searchTerm}"`,
+                "error"
+            );
+        }
+    } else {
+        // Hiển thị tất cả sản phẩm nếu không có tìm kiếm
+        renderProducts(getAllProducts());
+    }
+});
