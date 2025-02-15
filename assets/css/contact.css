@@ -1,0 +1,124 @@
+.contact-hero {
+    text-align: center;
+    padding: 60px 0;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    margin-bottom: 60px;
+    border-radius: 12px;
+}
+
+.contact-hero__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    animation: fadeInDown 0.5s ease;
+}
+
+.contact-hero__desc {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    animation: fadeInUp 0.5s ease 0.2s both;
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+}
+
+.contact-info {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.contact-info__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.contact-info__item:hover {
+    transform: translateX(10px);
+    background: var(--background-color);
+}
+
+.contact-info__item i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.contact-info__text h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.contact-info__text p {
+    color: var(--text-color);
+}
+
+.contact-form {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.contact-form__group {
+    margin-bottom: 20px;
+}
+
+.contact-form__group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.contact-form__group input,
+.contact-form__group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+}
+
+.contact-form__group input:focus,
+.contact-form__group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.contact-form button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 992px) {
+    .contact-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-hero__title {
+        font-size: 2rem;
+    }
+    
+    .contact-form {
+        padding: 20px;
+    }
+}
+
+.main {
+    padding-top: 120px;
+    min-height: 100vh;
+    background-color: var(--background-color);
+} 

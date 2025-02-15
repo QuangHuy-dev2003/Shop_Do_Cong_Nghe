@@ -308,16 +308,16 @@ function initFeaturedSlider(totalSlides) {
 
 // Hiển thị/ẩn loading
 function showLoading() {
-    const spinner = document.getElementById("loadingSpinner");
-    if (spinner) {
-        spinner.style.display = "block";
+    const loaderOverlay = document.querySelector(".loader-overlay");
+    if (loaderOverlay) {
+        loaderOverlay.style.display = "flex";
     }
 }
 
 function hideLoading() {
-    const spinner = document.getElementById("loadingSpinner");
-    if (spinner) {
-        spinner.style.display = "none";
+    const loaderOverlay = document.querySelector(".loader-overlay");
+    if (loaderOverlay) {
+        loaderOverlay.style.display = "none";
     }
 }
 
@@ -352,3 +352,9 @@ function showToast(message, type = 'success') {
 function viewProductDetail(productId) {
     window.location.href = `/product-detail.html?id=${productId}`;
 }
+
+// Thêm loader khi trang load
+document.addEventListener("DOMContentLoaded", () => {
+    showLoading();
+    setTimeout(hideLoading, 1000);
+});

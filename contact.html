@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Liên Hệ - CreativeTeam</title>
+        <link rel="stylesheet" href="assets/css/reset.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/header.css" />
+        <link rel="stylesheet" href="assets/css/footer.css" />
+        <link rel="stylesheet" href="assets/css/contact.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div id="header"></div>
+
+        <!-- Loading Spinner -->
+        <div class="loader-overlay">
+            <div class="loader"></div>
+        </div>
+
+        <main class="main">
+            <div class="container">
+                <section class="contact-hero">
+                    <h1 class="contact-hero__title">Liên Hệ</h1>
+                    <p class="contact-hero__desc">
+                        Hãy để lại thông tin, chúng tôi sẽ liên hệ với bạn sớm nhất
+                    </p>
+                </section>
+
+                <section class="contact-content">
+                    <div class="contact-info">
+                        <div class="contact-info__item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="contact-info__text">
+                                <h3>Địa chỉ</h3>
+                                <p>123 Đường ABC, Quận XYZ, TP.HCM</p>
+                            </div>
+                        </div>
+                        <div class="contact-info__item">
+                            <i class="fas fa-phone-alt"></i>
+                            <div class="contact-info__text">
+                                <h3>Điện thoại</h3>
+                                <p>0123 456 789</p>
+                            </div>
+                        </div>
+                        <div class="contact-info__item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="contact-info__text">
+                                <h3>Email</h3>
+                                <p>info@creativeteam.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="contact-form" id="contactForm">
+                        <div class="contact-form__group">
+                            <label for="name">Họ và tên</label>
+                            <input type="text" id="name" name="name" required />
+                        </div>
+                        <div class="contact-form__group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required />
+                        </div>
+                        <div class="contact-form__group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" id="phone" name="phone" required />
+                        </div>
+                        <div class="contact-form__group">
+                            <label for="message">Nội dung</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary">Gửi tin nhắn</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <div id="footer"></div>
+
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/contact.js"></script>
+    </body>
+</html> 
