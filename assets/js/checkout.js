@@ -76,22 +76,6 @@ function fillUserInfo(user) {
     document.getElementById("address").value = user.address || "";
 }
 
-// Xử lý khi người dùng rời trang
-window.addEventListener("beforeunload", (e) => {
-    if (window.location.pathname.includes("checkout.html")) {
-        e.preventDefault();
-        e.returnValue = "";
-    }
-});
-
-// Xử lý khi người dùng xác nhận rời trang
-window.addEventListener("unload", () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-        localStorage.removeItem(`order_${user.id}`);
-    }
-});
-
 // Thêm hàm hiển thị popup xác nhận
 function showConfirmModal(message, onConfirm) {
     const modalHtml = `
@@ -173,7 +157,7 @@ function renderOrderSummary(items, total) {
     orderTotal.textContent = formatPrice(total);
 }
 
-// Thêm vào đầu file
+// Xóa các event listener không cần thiết
 window.onbeforeunload = null;
 
 function handleOrder(e) {
@@ -188,6 +172,16 @@ function handleOrder(e) {
 
     if (!orderData) {
         showToast("Không tìm thấy thông tin đơn hàng", "error");
+        return;
+    }
+
+    // Kiểm tra thông tin bắt buộc
+    const name = formData.get("name");
+    const phone = formData.get("phone");
+    const address = formData.get("address");
+
+    if (!name || !phone || !address) {
+        showToast("Vui lòng điền đầy đủ thông tin", "error");
         return;
     }
 
@@ -208,7 +202,7 @@ function handleOrder(e) {
 
         const newOrder = {
             id: orderId,
-            items: itemsWithDetails, // Lưu thông tin chi tiết sản phẩm
+            items: itemsWithDetails,
             total: orderData.total,
             customer: {
                 name: formData.get("name"),
@@ -226,19 +220,26 @@ function handleOrder(e) {
         userOrders.push(newOrder);
         localStorage.setItem(`orders_${user.id}`, JSON.stringify(userOrders));
 
-        // Xóa sản phẩm khỏi giỏ hàng
+        // Xóa chỉ những sản phẩm đã đặt khỏi giỏ hàng
         const cartKey = `cart_${user.id}`;
         let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-        orderData.items.forEach((item) => {
-            cart = cart.filter((cartItem) => cartItem.id !== item.id);
-        });
+        const orderedItemIds = new Set(orderData.items.map((item) => item.id));
+        cart = cart.filter((cartItem) => !orderedItemIds.has(cartItem.id));
         localStorage.setItem(cartKey, JSON.stringify(cart));
 
+        // Xóa dữ liệu đơn hàng tạm thời
         localStorage.removeItem(`order_${user.id}`);
+
         hideLoading();
         window.location.href = `/thank-you.html?orderId=${orderId}`;
     }, 1000);
 }
+
+// Xóa event listener cũ và thêm mới
+document
+    .getElementById("checkoutForm")
+    .removeEventListener("submit", handleOrder);
+document.getElementById("checkoutForm").addEventListener("submit", handleOrder);
 
 // Thêm hàm getCart
 function getCart() {
@@ -248,46 +249,6 @@ function getCart() {
     const cartKey = `cart_${user.id}`;
     return JSON.parse(localStorage.getItem(cartKey)) || [];
 }
-
-// Sửa lại phần xử lý form đặt hàng
-document
-    .getElementById("checkoutForm")
-    .addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const cart = getCart();
-        if (cart.length === 0) {
-            showToast("Giỏ hàng trống", "error");
-            return;
-        }
-
-        showLoading();
-
-        setTimeout(() => {
-            // Cập nhật số lượng sản phẩm trong kho
-            cart.forEach((cartItem) => {
-                const product = getProductById(cartItem.id);
-                if (product) {
-                    product.quantity -= cartItem.quantity;
-                }
-            });
-
-            // Lưu lại số lượng mới
-            localStorage.setItem("products", JSON.stringify(products));
-
-            // Tạo mã đơn hàng
-            const orderId = "ORD" + Date.now();
-
-            // Xóa giỏ hàng
-            const user = JSON.parse(localStorage.getItem("user"));
-            localStorage.removeItem(`cart_${user.id}`);
-
-            hideLoading();
-
-            // Chuyển hướng đến trang thank-you
-            window.location.href = `thank-you.html?orderId=${orderId}`;
-        }, 1000);
-    });
 
 function saveOrder(orderData) {
     const user = JSON.parse(localStorage.getItem("user"));
